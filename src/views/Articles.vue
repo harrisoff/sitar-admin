@@ -40,64 +40,52 @@
           label="书名"
           align="center"
         ></el-table-column>
-        <el-table-column
-          prop="carousel"
-          label="轮播"
-          align="center"
-          width="100"
-        >
+        <el-table-column label="操作" align="center" width="350">
           <template slot-scope="scope">
+            <!-- 轮播 -->
             <el-button
               type="danger"
               size="mini"
               v-if="scope.row.carousel"
-              @click="setCTL('carousel', scope.row.real_id, false)"
+              @click="setCTL('carousel', scope.row.realId, false)"
               >取消</el-button
             >
             <el-button
               size="mini"
               v-else
-              @click="setCTL('carousel', scope.row.real_id, true)"
-              >设置</el-button
+              @click="setCTL('carousel', scope.row.realId, true)"
+              >轮播</el-button
             >
-          </template>
-        </el-table-column>
-        <el-table-column prop="top" label="置顶" align="center" width="100">
-          <template slot-scope="scope">
+            <!-- 置顶 -->
             <el-button
               type="danger"
               size="mini"
               v-if="scope.row.top"
-              @click="setCTL('top', scope.row.real_id, false)"
+              @click="setCTL('top', scope.row.realId, false)"
               >取消</el-button
             >
             <el-button
               size="mini"
               v-else
-              @click="setCTL('top', scope.row.real_id, true)"
-              >设置</el-button
+              @click="setCTL('top', scope.row.realId, true)"
+              >置顶</el-button
             >
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="list"
-          label="最近更新"
-          align="center"
-          width="100"
-        >
-          <template slot-scope="scope">
+            <!-- 最近更新 -->
             <el-button
               type="danger"
               size="mini"
               v-if="scope.row.list"
-              @click="setCTL('list', scope.row.real_id, false)"
+              @click="setCTL('list', scope.row.realId, false)"
               >取消</el-button
             >
             <el-button
               size="mini"
               v-else
-              @click="setCTL('list', scope.row.real_id, true)"
-              >设置</el-button
+              @click="setCTL('list', scope.row.realId, true)"
+              >最近更新</el-button
+            >
+            <el-button size="mini" @click="handleReformat(scope.row)"
+              >重新格式化</el-button
             >
           </template>
         </el-table-column>
@@ -127,7 +115,9 @@
 <script>
 import { databaseUpdate } from "../api/mini-extend";
 import { getArticleList } from "../api/mini-article";
+import { getNewsByRealId, updateArticleHtml } from "../api/mini-material";
 import { COLLECTIONS } from "../../config";
+import { formatHTML } from "../utils/html";
 
 export default {
   name: "",
@@ -157,10 +147,10 @@ export default {
         .catch(this.$message.error);
     },
     // 设置 carousel/top/list
-    setCTL(type, id, value) {
+    setCTL(type, realId, value) {
       const query = `
       db.collection('${COLLECTIONS.ARTICLE}').where({
-        real_id: '${id}',
+        real_id: '${realId}',
       }).update({
         data: {
           ${type}: ${value}
@@ -173,6 +163,22 @@ export default {
           this.initData();
         })
         .catch(this.$message.error);
+    },
+    // 使用 wx_material 的数据重新生成 html 和 text
+    handleReformat({ realId }) {
+      getNewsByRealId(realId)
+        .then(data => {
+          if (data) {
+            const { content } = data;
+            const { html, text } = formatHTML(content);
+            updateArticleHtml(realId, html, text)
+              .then(this.$message)
+              .catch(this.$error);
+          } else {
+            this.$warn("没有找到对应素材");
+          }
+        })
+        .catch(this.$error);
     }
   }
 };

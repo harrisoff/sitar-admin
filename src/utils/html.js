@@ -13,13 +13,16 @@ function parse(node) {
     "data-w"
   ];
   imgs.forEach(img => {
-    img.src = img.getAttribute("data-src");
-    img.style.styleText = "width: 100%";
-    img.className = "rich-text__img";
+    const src = img.getAttribute("data-src");
+    const parentNode = img.parentNode;
+    // parentNode 只有一个 img 元素
+    parentNode.innerHTML = `<image src="${src}" class="rich-text__img" mode="widthFix" />`;
+    // 不能用 document.createElement("image")
+    // 这样创建的不是一个 self closing 的 <image /> 而是 <image></image>
+    // 这个标签在小程序中显示不出来
+
     // 宽度撑满，高度自适应
     // https://developers.weixin.qq.com/miniprogram/dev/component/image.html
-    img.setAttribute("mode", "widthFix");
-    imgAttributes.forEach(attr => img.removeAttribute(attr));
   });
   // 个人小程序不支持 iframe，显示不出来
   const iframes = node.querySelectorAll("iframe");

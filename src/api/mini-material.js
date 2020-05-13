@@ -1,6 +1,7 @@
 import { databaseAdd, databaseGet } from "./mini-base";
 import { databaseUpdate, databaseClear } from "./mini-extend";
 import { parseArray } from "../utils/wx";
+import { escapeHtml } from "../utils/weapp";
 import { COLLECTIONS } from "../../config";
 
 // 所有 news 及其是否添加为 article，如果添加了是否显示
@@ -18,6 +19,43 @@ export function getNewsList() {
       })
       .catch(reject);
   });
+}
+
+export function getNewsByRealId(realId) {
+  const query = `
+  db.collection('${COLLECTIONS.NEWS_RAW}')
+  .field({
+    content: true
+  })
+  .where({
+    real_id: '${realId}'
+  })
+  .get()
+  `;
+  return new Promise((resolve, reject) => {
+    databaseGet(query)
+      .then(({ data }) => {
+        const jsonData = parseArray(data);
+        resolve(jsonData[0]);
+      })
+      .catch(reject);
+  });
+}
+
+// 仅用于
+// 由于之前解析 html 时有问题，需要重新解析的情景
+export function updateArticleHtml(realId, html, text) {
+  let query = `
+  db.collection('${COLLECTIONS.ARTICLE}')
+  .where({
+    real_id: '${realId}',
+  })
+  .update({
+    data: ${JSON.stringify({ html, text })}
+  })
+  `;
+  query = escapeHtml(query);
+  return databaseUpdate(query);
 }
 
 export function getArticleStatus() {
@@ -50,9 +88,7 @@ export function setArticle(type, data) {
     db.collection('${COLLECTIONS.ARTICLE}').add({
       data: ${JSON.stringify(data)}
     })`;
-    query = query.replace(/\\"/g, '\\\\"');
-    // TODO: 看看还有没有别的地方没有转义
-    query = query.replace(/\\n/g, "\\\\n");
+    query = escapeHtml(query);
     return databaseAdd(query);
   }
   //
@@ -62,7 +98,8 @@ export function setArticle(type, data) {
     query += `
     db.collection('${COLLECTIONS.ARTICLE}').where({
       real_id: '${id}',
-    }).update({
+    })
+    .update({
       data: {
         show: ${show}
       }
@@ -111,8 +148,7 @@ export async function databaseAddPartial(data, collectionName) {
     `;
     // 傻逼云开发数据库
     // https://developers.weixin.qq.com/community/develop/doc/0004e6a5d24dc018c0e887f8d5b400
-    query = query.replace(/\\"/g, '\\\\"');
-    query = query.replace(/\\n/g, "\\\\n");
+    query = escapeHtml(query);
     return () => databaseAdd(query);
   });
   const results = [];
