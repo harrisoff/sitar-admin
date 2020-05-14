@@ -8,6 +8,7 @@ import { COLLECTIONS } from "../../config";
 export function getNewsList() {
   const query = `
   db.collection('${COLLECTIONS.NEWS_RAW}')
+  .orderBy('timestamp', 'desc')
   .limit(999)
   .get()
   `;
@@ -58,6 +59,8 @@ export function updateArticleHtml(realId, html, text) {
   return databaseUpdate(query);
 }
 
+// 获取文章的显示状态
+// 用在图文素材管理页，更新素材的的添加/显示状态
 export function getArticleStatus() {
   const query = `
   db.collection('${COLLECTIONS.ARTICLE}')
@@ -79,13 +82,13 @@ export function getArticleStatus() {
 }
 
 // 显示一篇 news
-// 可能是新增到 article 表，可能是本来就在 article 表只是设置为显示
 export function setArticle(type, data) {
   // type: add/show/hide
   let query = ``;
   if (type === "add") {
     query += `
-    db.collection('${COLLECTIONS.ARTICLE}').add({
+    db.collection('${COLLECTIONS.ARTICLE}')
+    .add({
       data: ${JSON.stringify(data)}
     })`;
     query = escapeHtml(query);
@@ -96,7 +99,8 @@ export function setArticle(type, data) {
     const id = data;
     const show = type === "show";
     query += `
-    db.collection('${COLLECTIONS.ARTICLE}').where({
+    db.collection('${COLLECTIONS.ARTICLE}')
+    .where({
       real_id: '${id}',
     })
     .update({
@@ -142,12 +146,11 @@ export async function databaseAddPartial(data, collectionName) {
   }
   const taskList = partialList.map(partialData => {
     let query = `
-    db.collection('${collectionName}').add({
+    db.collection('${collectionName}')
+    .add({
       data: ${JSON.stringify(partialData)}
     })
     `;
-    // 傻逼云开发数据库
-    // https://developers.weixin.qq.com/community/develop/doc/0004e6a5d24dc018c0e887f8d5b400
     query = escapeHtml(query);
     return () => databaseAdd(query);
   });

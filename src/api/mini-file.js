@@ -30,7 +30,7 @@ export const fileUploadForce = (file, uploadPath) => {
   return uploadFile(file, uploadPath);
 };
 
-// TODO: 更新文件表
+// 上传文件后添加一条记录
 export function addFileRecord(file_id, filename, file_path) {
   const collectionName = COLLECTIONS.FILE;
   const queryData = {
@@ -41,13 +41,15 @@ export function addFileRecord(file_id, filename, file_path) {
     ref: 0
   };
   const query = `
-  db.collection('${collectionName}').add({
+  db.collection('${collectionName}')
+  .add({
     data: ${JSON.stringify(queryData)}
   })
   `;
   return databaseAdd(query);
 }
 
+// 文件被使用后更新 ref 字段
 export function updateFileRecord(file_id) {
   const collectionName = COLLECTIONS.FILE;
   const query = `
@@ -63,6 +65,3 @@ export function updateFileRecord(file_id) {
   `;
   return databaseUpdate(query);
 }
-
-// 删除一个文件+上传一个文件
-export function deleteAndUpload() {}

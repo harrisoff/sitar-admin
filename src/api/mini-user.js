@@ -21,6 +21,9 @@ export function getUserList() {
         foreignField: 'open_id',
         as: 'comment_list',
       })
+      .sort({
+        first_login: -1
+      })
       .end()
   `;
   return new Promise((resolve, reject) => {
@@ -59,6 +62,9 @@ export function getLogList(page = 1, size = 20) {
     foreignField: 'open_id',
     as: 'user',
   })
+  .sort({
+    timestamp: -1
+  })
   .skip(${(page - 1) * size})
   .limit(${size})
   .end()
@@ -96,8 +102,6 @@ export function getLogList(page = 1, size = 20) {
             id: _id
           };
         });
-        // 查询结果是时间正序，这里只要反转一下
-        result.sort(() => -1);
         resolve(result);
       })
       .catch(reject);

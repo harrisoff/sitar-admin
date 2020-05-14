@@ -20,6 +20,9 @@ export function getCommentList() {
         foreignField: 'real_id',
         as: 'article',
       })
+      .sort({
+        timestamp: -1
+      })
       .end()
   `;
   return new Promise((resolve, reject) => {
@@ -47,8 +50,6 @@ export function getCommentList() {
             title: article.title
           };
         });
-        // 查询结果是时间正序，这里只要反转一下
-        result.sort(() => -1);
         resolve(result);
       })
       .catch(reject);

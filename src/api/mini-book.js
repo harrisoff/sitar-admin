@@ -1,5 +1,5 @@
-import { databaseAdd } from "./mini-base";
-import { databaseUpdate, databaseSearch } from "./mini-extend";
+import { databaseAdd, databaseGet } from "./mini-base";
+import { databaseUpdate } from "./mini-extend";
 import { fileUploadIfNone } from "./mini-file";
 import { parseArray } from "../utils/wx";
 
@@ -11,8 +11,15 @@ export function uploadBookCover(file, filename) {
 }
 
 export function getBookList() {
+  // book 表没有 timestamp 就不排序了
+  const query = `
+  db.collection('${COLLECTIONS.BOOK}')
+  .skip(0)
+  .limit(999)
+  .get()
+  `;
   return new Promise((resolve, reject) => {
-    databaseSearch(COLLECTIONS.BOOK, { pagination: { size: 999 } })
+    databaseGet(query)
       .then(res => {
         const { pager, data } = res;
         const jsonData = parseArray(data);
@@ -27,7 +34,8 @@ export function getBookList() {
 
 export function addBook(bookInfo) {
   const query = `
-  db.collection('${COLLECTIONS.BOOK}').add({
+  db.collection('${COLLECTIONS.BOOK}')
+  .add({
     data: ${JSON.stringify(bookInfo)}
   })
   `;
@@ -37,9 +45,11 @@ export function addBook(bookInfo) {
 // 修改书籍信息
 export function editBook(id, bookInfo) {
   const query = `
-  db.collection('${COLLECTIONS.BOOK}').where({
+  db.collection('${COLLECTIONS.BOOK}')
+  .where({
     _id: '${id}',
-  }).update({
+  })
+  .update({
     data: ${JSON.stringify(bookInfo)}
   })
 `;

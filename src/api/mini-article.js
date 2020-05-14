@@ -4,6 +4,8 @@ import { parseArray, formatDouble } from "../utils/wx";
 import { timestampFormat } from "../utils";
 import { COLLECTIONS } from "../../config";
 
+// 获取文章列表
+// 用于文章页的表格和修改书籍下属文章
 export function getArticleList() {
   const query = `
   db.collection('${COLLECTIONS.ARTICLE}').aggregate()
@@ -16,6 +18,9 @@ export function getArticleList() {
     localField: 'like_id',
     foreignField: 'open_id',
     as: 'users',
+  })
+  .sort({
+    timestamp: -1
   })
   .end()
   `;
@@ -55,7 +60,7 @@ export function getArticleList() {
   });
 }
 
-// 根据 article real_id 批量修改 book_title
+// 根据 real_id 数组批量修改 article 的 book_title
 export function updateArticleBook(ids, bookId, bookTitle) {
   const query = `
   db.collection('${COLLECTIONS.ARTICLE}')
