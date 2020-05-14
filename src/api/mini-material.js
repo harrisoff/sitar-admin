@@ -82,35 +82,14 @@ export function getArticleStatus() {
 }
 
 // 显示一篇 news
-export function setArticle(type, data) {
-  // type: add/show/hide
-  let query = ``;
-  if (type === "add") {
-    query += `
+export function addArticle(data) {
+  let query = `
     db.collection('${COLLECTIONS.ARTICLE}')
     .add({
       data: ${JSON.stringify(data)}
     })`;
-    query = escapeHtml(query);
-    return databaseAdd(query);
-  }
-  //
-  else {
-    const id = data;
-    const show = type === "show";
-    query += `
-    db.collection('${COLLECTIONS.ARTICLE}')
-    .where({
-      real_id: '${id}',
-    })
-    .update({
-      data: {
-        show: ${show}
-      }
-    })
-  `;
-    return databaseUpdate(query);
-  }
+  query = escapeHtml(query);
+  return databaseAdd(query);
 }
 
 // 清空旧数据并添加

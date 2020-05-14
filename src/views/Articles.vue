@@ -2,13 +2,28 @@
   <div class="view-article">
     <div>
       <el-table :data="articleList" row-key="id">
-        <el-table-column type="index" label="#" align="center">
-        </el-table-column>
+        <el-table-column
+          type="index"
+          label="#"
+          align="center"
+        ></el-table-column>
         <el-table-column prop="title" label="标题" align="center">
           <template slot-scope="scope">
             <a :href="scope.row.url" target="_blank">{{ scope.row.title }}</a>
           </template>
         </el-table-column>
+        <el-table-column
+          prop="view"
+          label="点击"
+          align="center"
+          width="50"
+        ></el-table-column>
+        <el-table-column
+          prop="like"
+          label="点赞"
+          align="center"
+          width="50"
+        ></el-table-column>
         <el-table-column
           prop="thumbUrl"
           label="封面图"
@@ -24,11 +39,18 @@
             >
           </template>
         </el-table-column>
-        <el-table-column
-          prop="digest"
-          label="摘要"
-          align="center"
-        ></el-table-column>
+        <el-table-column prop="digest" label="摘要" align="center">
+          <template slot-scope="scope">
+            <el-tooltip
+              class="item"
+              effect="dark"
+              :content="scope.row.digest"
+              placement="top-start"
+            >
+              <a href="javascript:void(0)">查看</a>
+            </el-tooltip>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="time"
           label="时间"
@@ -40,8 +62,22 @@
           label="书名"
           align="center"
         ></el-table-column>
-        <el-table-column label="操作" align="center" width="350">
+        <el-table-column label="操作" align="center" width="400">
           <template slot-scope="scope">
+            <!-- 显示/隐藏 -->
+            <el-button
+              type="danger"
+              size="mini"
+              v-if="scope.row.show"
+              @click="handleSetVisibility(scope.row.realId, false)"
+              >隐藏</el-button
+            >
+            <el-button
+              size="mini"
+              v-else
+              @click="handleSetVisibility(scope.row.realId, true)"
+              >显示</el-button
+            >
             <!-- 轮播 -->
             <el-button
               type="danger"
@@ -95,18 +131,6 @@
           align="center"
           width="50"
         ></el-table-column>
-        <el-table-column
-          prop="view"
-          label="点击"
-          align="center"
-          width="50"
-        ></el-table-column>
-        <el-table-column
-          prop="like"
-          label="点赞"
-          align="center"
-          width="50"
-        ></el-table-column>
       </el-table>
     </div>
   </div>
@@ -114,7 +138,7 @@
 
 <script>
 import { databaseUpdate } from "../api/mini-extend";
-import { getArticleList } from "../api/mini-article";
+import { getArticleList, setArticleVisibility } from "../api/mini-article";
 import { getNewsByRealId, updateArticleHtml } from "../api/mini-material";
 import { COLLECTIONS } from "../../config";
 import { formatHTML } from "../utils/html";
@@ -164,6 +188,15 @@ export default {
         })
         .catch(this.$message.error);
     },
+    // 显示/隐藏
+    handleSetVisibility(realId, show) {
+      setArticleVisibility(realId, show)
+        .then(msg => {
+          this.$success(msg);
+          this.initData();
+        })
+        .catch(this.$error);
+    },
     // 使用 wx_material 的数据重新生成 html 和 text
     handleReformat({ realId }) {
       getNewsByRealId(realId)
@@ -184,4 +217,14 @@ export default {
 };
 </script>
 
-<style lang="less"></style>
+<style lang="less">
+.view-article {
+  .el-table {
+    .el-table__row {
+      .el-button + .el-button {
+        margin-left: 0;
+      }
+    }
+  }
+}
+</style>

@@ -76,3 +76,19 @@ export function updateArticleBook(ids, bookId, bookTitle) {
   `;
   return databaseUpdate(query);
 }
+
+// 显示/隐藏
+export function setArticleVisibility(id, show) {
+  const query = `
+    db.collection('${COLLECTIONS.ARTICLE}')
+    .where({
+      real_id: '${id}',
+    })
+    .update({
+      data: {
+        show: ${show}
+      }
+    })
+  `;
+  return databaseUpdate(query);
+}
