@@ -113,7 +113,6 @@ export async function resetMaterial(data, collectionName) {
 // 但是文档没有说明长度限制，只能摸索着写一个了
 // 然后从总数据里一点点截取
 export async function databaseAddPartial(data, collectionName) {
-  console.log(data, collectionName);
   const partialList = [];
   let partialData = [];
   while (data.length) {

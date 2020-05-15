@@ -199,6 +199,7 @@ export default {
         })
         .catch(this.$message.error);
     },
+    // 所有类型或单类型素材全量同步
     async fullSync(type, counts) {
       this.syncLog += `开始获取微信素材...<br/>`;
       let materialList = [];
@@ -244,6 +245,7 @@ export default {
         this.$message.error(err);
       }
     },
+    // 单类型素材增量同步
     async incSync(type) {
       try {
         // 1. 获取微信前 n 条
@@ -262,11 +264,14 @@ export default {
         }
         const api = apiMap[type];
         const materials = await api(1, count);
+        // 2. 分类
         this.syncLog += `获取完成，开始格式化...<br/>`;
-        // 2. 取数据库前 count 条的 media_id 查重
+        const extracted = extractItems(materials);
+        const material = extracted[type];
+        // 3. 取数据库前 count 条的 media_id 查重
         this.syncLog += `开始查重...<br/>`;
         const recordMediaIds = await getMediaIdsByType(type, count);
-        const filtered = materials.filter(
+        const filtered = material.filter(
           ({ media_id }) => !recordMediaIds.includes(media_id)
         );
         const inc = filtered.length;
@@ -274,9 +279,8 @@ export default {
           this.syncLog += `无新项目`;
           return;
         }
+        // 4. 添加查重之后剩下的，更新 material 类型对应的表
         this.syncLog += `新增${inc}条，开始更新数据库...<br/>`;
-        // 3. 添加查重之后剩下的
-        // 更新 material 类型对应的表
         const collectionName = collectionNameMap[type];
         await databaseAddPartial(filtered, collectionName);
         this.syncLog += `同步完成<br/>`;
