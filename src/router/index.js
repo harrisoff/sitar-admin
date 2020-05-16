@@ -43,13 +43,34 @@ export const routes = [
       },
       {
         path: "/articles",
-        component: () => import("@/views/Articles.vue"),
-        meta: { icon: "el-icon-document", title: "文章", menu: true }
-      },
-      {
-        path: "/books",
-        component: () => import("@/views/Books.vue"),
-        meta: { icon: "el-icon-reading", title: "书籍", menu: true }
+        component: () => import("@/views/Articles/Index.vue"),
+        meta: { icon: "el-icon-document", title: "文章", menu: true },
+        children: [
+          {
+            path: "/articles/manage",
+            component: () => import("@/views/Articles/Manage.vue"),
+            meta: {
+              title: "文章管理",
+              menu: true
+            }
+          },
+          {
+            path: "/articles/books",
+            component: () => import("@/views/Articles/Books.vue"),
+            meta: {
+              title: "书籍分类",
+              menu: true
+            }
+          },
+          {
+            path: "/articles/booklets",
+            component: () => import("@/views/Articles/Booklets.vue"),
+            meta: {
+              title: "小册分类",
+              menu: true
+            }
+          }
+        ]
       },
       {
         path: "/comments",

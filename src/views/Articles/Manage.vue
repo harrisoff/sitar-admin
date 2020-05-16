@@ -1,7 +1,21 @@
 <template>
-  <div class="view-article">
+  <div class="view-articles-manage">
     <div>
-      <el-table :data="articleList" row-key="id">
+      <div class="filter">
+        <el-radio-group
+          v-model="bookId"
+          @change="handleBookIdChange"
+          size="mini"
+        >
+          <el-radio-button
+            :label="id"
+            v-for="({ id, title }, index) in books"
+            :key="index"
+            >{{ title }}</el-radio-button
+          >
+        </el-radio-group>
+      </div>
+      <el-table :data="articleList" row-key="id" stripe border>
         <el-table-column
           type="index"
           label="#"
@@ -39,7 +53,7 @@
             >
           </template>
         </el-table-column>
-        <el-table-column prop="digest" label="摘要" align="center">
+        <el-table-column prop="digest" label="摘要" align="center" width="100">
           <template slot-scope="scope">
             <el-tooltip
               class="item"
@@ -62,7 +76,13 @@
           label="书名"
           align="center"
         ></el-table-column>
-        <el-table-column label="操作" align="center" width="400">
+        <el-table-column
+          prop="tagId"
+          label="标签"
+          align="center"
+          width="50"
+        ></el-table-column>
+        <el-table-column label="操作" align="left" width="400" fixed="right">
           <template slot-scope="scope">
             <!-- 显示/隐藏 -->
             <el-button
@@ -125,23 +145,17 @@
             >
           </template>
         </el-table-column>
-        <el-table-column
-          prop="tagId"
-          label="标签"
-          align="center"
-          width="50"
-        ></el-table-column>
       </el-table>
     </div>
   </div>
 </template>
 
 <script>
-import { databaseUpdate } from "../api/mini-extend";
-import { getArticleList, setArticleVisibility } from "../api/mini-article";
-import { getNewsByRealId, updateArticleHtml } from "../api/mini-material";
-import { COLLECTIONS } from "../../config";
-import { formatHTML } from "../utils/html";
+import { databaseUpdate } from "../../api/mini-extend";
+import { getArticleList, setArticleVisibility } from "../../api/mini-article";
+import { getNewsByRealId, updateArticleHtml } from "../../api/mini-material";
+import { COLLECTIONS } from "../../../config";
+import { formatHTML } from "../../utils/html";
 
 export default {
   name: "",
@@ -151,10 +165,17 @@ export default {
   props: [],
   data() {
     return {
-      articleList: []
+      articleRawList: [],
+      bookId: "all",
+      books: []
     };
   },
-  computed: {},
+  computed: {
+    articleList() {
+      if (this.bookId === "all") return this.articleRawList;
+      return this.articleRawList.filter(a => a.bookId === this.bookId);
+    }
+  },
   watch: {},
   beforeCreate() {},
   created() {
@@ -166,7 +187,24 @@ export default {
     initData() {
       getArticleList()
         .then(data => {
-          this.articleList = data;
+          const books = [
+            {
+              id: "all",
+              title: "所有"
+            }
+          ];
+          const bookIds = [];
+          data.forEach(({ bookId, bookTitle }) => {
+            if (!bookIds.includes(bookId)) {
+              bookIds.push(bookId);
+              books.push({
+                id: bookId,
+                title: bookTitle || "未分类"
+              });
+            }
+          });
+          this.books = books;
+          this.articleRawList = data;
         })
         .catch(this.$message.error);
     },
@@ -212,13 +250,20 @@ export default {
           }
         })
         .catch(this.$error);
+    },
+    // 表格过滤
+    handleBookIdChange(bookId) {
+      console.log(bookId);
     }
   }
 };
 </script>
 
 <style lang="less">
-.view-article {
+.view-articles-manage {
+  .filter {
+    margin-bottom: 10px;
+  }
   .el-table {
     .el-table__row {
       .el-button + .el-button {

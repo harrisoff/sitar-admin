@@ -1,5 +1,5 @@
 <template>
-  <div class="view-book">
+  <div class="view-articles-book">
     <div class="tool-bar">
       <el-button type="primary" @click="handleShowDialog('add')"
         >新增</el-button
@@ -93,15 +93,15 @@
 </template>
 
 <script>
-import { getArticleList, updateArticleBook } from "../api/mini-article";
+import { getArticleList, updateArticleBook } from "../../api/mini-article";
 import {
   uploadBookCover,
   getBookList,
   addBook,
   editBook
-} from "../api/mini-book";
-import { addFileRecord, updateFileRecord } from "../api/mini-file";
-import { genFileURL } from "../utils/wx";
+} from "../../api/mini-book";
+import { addFileRecord, updateFileRecord } from "../../api/mini-file";
+import { genFileURL } from "../../utils/wx";
 
 export default {
   name: "",
@@ -135,7 +135,6 @@ export default {
       // table
       bookListRaw: [],
       // 书籍下属文章
-      articleListRaw: [],
       selectedBookId: "",
       selectedBookTitle: "",
       leftList: [],
@@ -212,12 +211,11 @@ export default {
               intro: this.formData.intro,
               status: "",
               title: this.formData.title,
-              type_id: "",
-              type_title: ""
+              type: "book"
             };
             addBook(bookInfo)
               .then(() => {
-                this.$message("添加成功");
+                this.$success("添加成功");
                 this.isDialogVisible = false;
                 this.getBooks();
                 updateFileRecord(this.formData.cover)
@@ -290,8 +288,7 @@ export default {
     getArticles() {
       getArticleList()
         .then(data => {
-          this.articleListRaw = data;
-          this.articleListRaw.forEach(article => {
+          data.forEach(article => {
             const { bookId, realId, title } = article;
             if (bookId === "" || bookId === this.selectedBookId) {
               this.leftList.push({

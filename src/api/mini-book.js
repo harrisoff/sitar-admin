@@ -1,4 +1,4 @@
-import { databaseAdd, databaseGet } from "./mini-base";
+import { databaseAdd, databaseGet, databaseAggregate } from "./mini-base";
 import { databaseUpdate } from "./mini-extend";
 import { fileUploadIfNone } from "./mini-file";
 import { parseArray } from "../utils/wx";
@@ -10,16 +10,52 @@ export function uploadBookCover(file, filename) {
   return fileUploadIfNone(file, uploadPath, filename);
 }
 
+// book 分类
 export function getBookList() {
   // book 表没有 timestamp 就不排序了
   const query = `
   db.collection('${COLLECTIONS.BOOK}')
+  .where({
+    type: 'book'
+  })
   .skip(0)
   .limit(999)
   .get()
   `;
   return new Promise((resolve, reject) => {
     databaseGet(query)
+      .then(res => {
+        const { pager, data } = res;
+        const jsonData = parseArray(data);
+        resolve({
+          pager,
+          data: jsonData
+        });
+      })
+      .catch(reject);
+  });
+}
+
+// booklet 分类
+export function getBookletList() {
+  // 傻逼小程序
+  // _.not() 报错
+  // book 表没有 timestamp 就不排序了
+  const query = `
+  db.collection('${COLLECTIONS.BOOK}').aggregate()
+  .match({
+    type: 'booklet',
+  })
+  .lookup({
+    from: '${COLLECTIONS.ARTICLE}',
+    localField: '_id',
+    foreignField: 'book_id',
+    as: 'articles',
+  })
+  .end()
+  `;
+  return new Promise((resolve, reject) => {
+    databaseAggregate(query)
       .then(res => {
         const { pager, data } = res;
         const jsonData = parseArray(data);
@@ -40,6 +76,10 @@ export function addBook(bookInfo) {
   })
   `;
   return databaseAdd(query);
+}
+
+export function addBooklet(bookletInfo) {
+  return addBook(bookletInfo);
 }
 
 // 修改书籍信息
