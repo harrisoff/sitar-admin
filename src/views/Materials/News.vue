@@ -1,5 +1,5 @@
 <template>
-  <div class="view-news">
+  <div class="view-material-news">
     <div>
       <el-table :data="newsList" row-key="_id">
         <el-table-column type="index" label="#"> </el-table-column>
@@ -114,14 +114,4 @@ export default {
 };
 </script>
 
-<style lang="less">
-.add {
-  color: orange;
-}
-show {
-  color: green;
-}
-.hide {
-  color: red;
-}
-</style>
+<style lang="less"></style>

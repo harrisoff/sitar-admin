@@ -1,5 +1,5 @@
 <template>
-  <div class="users-manage">
+  <div class="view-users-manage">
     <el-table :data="userList" row-key="openId">
       <el-table-column prop="nickName" label="昵称"></el-table-column>
       <el-table-column prop="avatarUrl" label="头像">
@@ -81,7 +81,7 @@ export default {
 </script>
 
 <style lang="less">
-.users-manage {
+.view-users-manage {
   .avatar {
     width: 50px;
   }
