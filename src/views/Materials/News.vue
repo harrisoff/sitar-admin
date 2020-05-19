@@ -101,11 +101,12 @@ export default {
         top: false,
         tag_id: [],
         show: true,
-        view: 0
+        view: 0,
+        last_modified: new Date().getTime()
       };
       addArticle(articleData)
         .then(() => {
-          this.$message("修改成功");
+          this.$success("更新成功");
           this.initTable();
         })
         .catch(this.$message.error);

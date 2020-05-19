@@ -46,13 +46,18 @@ export function getNewsByRealId(realId) {
 // 仅用于
 // 由于之前解析 html 时有问题，需要重新解析的情景
 export function updateArticleHtml(realId, html, text) {
+  const data = {
+    html,
+    text,
+    last_modified: new Date().getTime()
+  };
   let query = `
   db.collection('${COLLECTIONS.ARTICLE}')
   .where({
     real_id: '${realId}',
   })
   .update({
-    data: ${JSON.stringify({ html, text })}
+    data: ${JSON.stringify(data)}
   })
   `;
   query = escapeHtml(query);
