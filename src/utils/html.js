@@ -10,19 +10,16 @@ function parse(node) {
     "data-s",
     "data-src",
     "data-type",
-    "data-w"
+    "data-w",
+    "style"
   ];
+  // 小程序 rich-text 组件支持的 tag 见文档
+  // https://developers.weixin.qq.com/miniprogram/dev/component/rich-text.html
   imgs.forEach(img => {
     const src = img.getAttribute("data-src");
-    const parentNode = img.parentNode;
-    // parentNode 只有一个 img 元素
-    parentNode.innerHTML = `<image src="${src}" class="rich-text__img" mode="widthFix" />`;
-    // 不能用 document.createElement("image")
-    // 这样创建的不是一个 self closing 的 <image /> 而是 <image></image>
-    // 这个标签在小程序中显示不出来
-
-    // 宽度撑满，高度自适应
-    // https://developers.weixin.qq.com/miniprogram/dev/component/image.html
+    img.src = src;
+    img.className = "rich-text__img";
+    imgAttributes.forEach(attr => img.removeAttribute(attr));
   });
   // 个人小程序不支持 iframe，显示不出来
   const iframes = node.querySelectorAll("iframe");
@@ -36,13 +33,18 @@ function parse(node) {
   });
 }
 
+// FIXME: formatHTML 调用方式还得改一下，外层捕捉不到 error
 export function formatHTML(html) {
   if (!html) return "";
   html = `<div>${html}</div>`;
-  const { document } = new JSDOM(html).window;
-  const root = document.querySelector("div");
-  parse(root);
-  const innerText = root.textContent;
-  const innerHTML = root.innerHTML;
-  return { text: innerText, html: innerHTML };
+  try {
+    const { document } = new JSDOM(html).window;
+    const root = document.querySelector("div");
+    parse(root, document);
+    const innerText = root.textContent;
+    const innerHTML = root.innerHTML;
+    return { text: innerText, html: innerHTML };
+  } catch (err) {
+    console.error(err);
+  }
 }
