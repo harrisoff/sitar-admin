@@ -1,6 +1,6 @@
 <template>
   <div class="view-users-log">
-    <el-table :data="logList" row-key="_id">
+    <el-table :data="logList" row-key="_id" v-loading="isLoading">
       <el-table-column prop="nickName" label="昵称"></el-table-column>
       <el-table-column prop="avatarUrl" label="头像">
         <template slot-scope="scope">
@@ -47,7 +47,8 @@ export default {
       logList: [],
       pageSize: 20,
       currentPage: 1,
-      total: 0
+      total: 0,
+      isLoading: false
     };
   },
   computed: {},
@@ -58,18 +59,22 @@ export default {
       .then(total => {
         this.total = total;
       })
-      .catch(console.error);
+      .catch(this.$error);
     this.getLogList();
   },
   mounted() {},
   beforeUpdate() {},
   methods: {
     getLogList() {
+      this.isLoading = true;
       getLogList(this.currentPage, this.pageSize)
         .then(res => {
           this.logList = res;
         })
-        .catch(this.$error);
+        .catch(this.$error)
+        .then(_ => {
+          this.isLoading = false;
+        });
     },
     handleSizeChange(size) {
       this.pageSize = size;

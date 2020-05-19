@@ -1,6 +1,6 @@
 <template>
   <div class="view-comment">
-    <el-table :data="commentList" row-key="id">
+    <el-table :data="commentList" row-key="id" v-loading="isLoading">
       <el-table-column prop="nickName" label="昵称"></el-table-column>
       <el-table-column prop="avatarUrl" label="头像">
         <template slot-scope="scope">
@@ -44,7 +44,8 @@ export default {
   props: [],
   data() {
     return {
-      commentList: []
+      commentList: [],
+      isLoading: false
     };
   },
   computed: {},
@@ -62,11 +63,15 @@ export default {
         .catch(this.$error);
     },
     getCommentList() {
+      this.isLoading = true;
       getCommentList()
         .then(res => {
           this.commentList = res;
         })
-        .catch(this.$error);
+        .catch(this.$error)
+        .then(_ => {
+          this.isLoading = false;
+        });
     }
   }
 };

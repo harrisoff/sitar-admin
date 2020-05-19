@@ -1,6 +1,6 @@
 <template>
   <div class="view-users-manage">
-    <el-table :data="userList" row-key="openId">
+    <el-table :data="userList" row-key="openId" v-loading="isLoading">
       <el-table-column prop="nickName" label="昵称"></el-table-column>
       <el-table-column prop="avatarUrl" label="头像">
         <template slot-scope="scope">
@@ -52,7 +52,8 @@ export default {
   props: [],
   data() {
     return {
-      userList: []
+      userList: [],
+      isLoading: false
     };
   },
   computed: {},
@@ -70,11 +71,15 @@ export default {
         .catch(this.$error);
     },
     getUserList() {
+      this.isLoading = true;
       getUserList()
         .then(res => {
           this.userList = res;
         })
-        .catch(this.$error);
+        .catch(this.$error)
+        .then(_ => {
+          this.isLoading = false;
+        });
     }
   }
 };

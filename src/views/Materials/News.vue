@@ -1,7 +1,7 @@
 <template>
   <div class="view-material-news">
     <div>
-      <el-table :data="newsList" row-key="_id">
+      <el-table :data="newsList" row-key="_id" v-loading="isLoading">
         <el-table-column type="index" label="#"> </el-table-column>
         <el-table-column prop="title" label="标题">
           <template slot-scope="scope">
@@ -41,7 +41,8 @@ export default {
     return {
       newsListRaw: [],
       articleListRaw: [],
-      newsList: []
+      newsList: [],
+      isLoading: false
     };
   },
   computed: {},
@@ -54,29 +55,36 @@ export default {
   beforeUpdate() {},
   methods: {
     async initTable() {
-      // 先获取所有 news，再使用 article 的 show 更新
-      // news 只需要获取一次
-      // 不使用联表查询
-      // 因为聚合时没法选择字段，会把 article 所有字段全部返回
-      // 包括大量无用的文章内容数据
-      if (this.newsListRaw.length === 0) {
-        this.newsListRaw = await getNewsList();
+      this.isLoading = true;
+      try {
+        // 先获取所有 news，再使用 article 的 show 更新
+        // news 只需要获取一次
+        // 不使用联表查询
+        // 因为聚合时没法选择字段，会把 article 所有字段全部返回
+        // 包括大量无用的文章内容数据
+        if (this.newsListRaw.length === 0) {
+          this.newsListRaw = await getNewsList();
+        }
+        const articleList = await getArticleStatus();
+        this.newsList = this.newsListRaw.map(newsItem => {
+          const { real_id, update_time } = newsItem;
+          const match = articleList.find(
+            articleItem => articleItem.real_id === real_id
+          );
+          const added = match
+            ? true // 已添加
+            : false; // 未添加
+          return {
+            ...newsItem,
+            time: timestampFormat(new Date(update_time * 1000)),
+            added
+          };
+        });
+      } catch (err) {
+        this.$error(err);
+      } finally {
+        this.isLoading = false;
       }
-      const articleList = await getArticleStatus();
-      this.newsList = this.newsListRaw.map(newsItem => {
-        const { real_id, update_time } = newsItem;
-        const match = articleList.find(
-          articleItem => articleItem.real_id === real_id
-        );
-        const added = match
-          ? true // 已添加
-          : false; // 未添加
-        return {
-          ...newsItem,
-          time: timestampFormat(new Date(update_time * 1000)),
-          added
-        };
-      });
     },
     // events
     handleAddArticle(row) {

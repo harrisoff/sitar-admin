@@ -5,7 +5,7 @@
         >新增</el-button
       >
     </div>
-    <el-table :data="bookletList">
+    <el-table :data="bookletList" v-loading="isLoading">
       <el-table-column type="expand">
         <template slot-scope="scope">
           <el-table :data="scope.row.articles">
@@ -54,6 +54,7 @@ export default {
       dialogType: "add",
       isDialogVisible: false,
       bookletList: [],
+      isLoading: false,
       // form
       cacheTitle: "",
       bookletId: "",
@@ -146,11 +147,15 @@ export default {
     },
     // api
     getBookletList() {
+      this.isLoading = true;
       getBookletList()
         .then(({ data }) => {
           this.bookletList = data;
         })
-        .catch(console.error);
+        .catch(this.$error)
+        .then(_ => {
+          this.isLoading = false;
+        });
     },
     // 穿梭框数据
     getArticles() {

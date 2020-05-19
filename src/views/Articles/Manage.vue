@@ -15,7 +15,13 @@
           >
         </el-radio-group>
       </div>
-      <el-table :data="articleList" row-key="id" stripe border>
+      <el-table
+        :data="articleList"
+        row-key="id"
+        stripe
+        border
+        v-loading="isLoading"
+      >
         <el-table-column
           type="index"
           label="#"
@@ -167,7 +173,8 @@ export default {
     return {
       articleRawList: [],
       bookId: "all",
-      books: []
+      books: [],
+      isLoading: false
     };
   },
   computed: {
@@ -185,6 +192,7 @@ export default {
   beforeUpdate() {},
   methods: {
     initData() {
+      this.isLoading = true;
       getArticleList()
         .then(data => {
           const books = [
@@ -203,6 +211,7 @@ export default {
               });
             }
           });
+          this.isLoading = false;
           this.books = books;
           this.articleRawList = data;
         })
