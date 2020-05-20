@@ -56,6 +56,8 @@ const COLLECTIONS = {
 // 虽然是根路径，但是不能以 / 开头
 const STORAGE = {
   BOOK_COVER: "book/cover", // 图片路径
+  SONG: "song/file",
+  ALBUM_COVER: "song/cover",
   BACKUP: "backup" // 备份文件
 };
 // 云函数

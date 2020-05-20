@@ -50,3 +50,33 @@ const { errCode, errMsg, requestID } = error
 ```js
 const { errMsg } = error
 ```
+
+## 数据库
+
+song
+
+- _id
+- title
+- writer 作者
+- singer 演唱
+- studio 录音室
+- album_id 所属专辑
+- side A/B 面
+- order 排序
+- lyrics 歌词
+- info 信息
+
+album
+
+- _id
+- artist
+- title
+- release_time 发布时间
+- record_time 录制时间
+- genre 类型
+- label 厂牌
+- producer 制作人
+- song_id 下属歌曲
+- cover_id 封面
+- order 排序
+- info 专辑信息

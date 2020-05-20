@@ -26,8 +26,13 @@ export const fileUploadIfNone = (file, uploadPath, filename) => {
 };
 
 // 文件存在时覆盖并上传 - 默认就是
-export const fileUploadForce = (file, uploadPath) => {
-  return uploadFile(file, uploadPath);
+export const fileUploadForce = (
+  file,
+  uploadPath,
+  filename,
+  onUploadProgress
+) => {
+  return uploadFile(file, uploadPath, filename, onUploadProgress);
 };
 
 // 上传文件后添加一条记录

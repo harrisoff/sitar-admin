@@ -73,6 +73,21 @@ export const routes = [
         ]
       },
       {
+        path: "/songs",
+        component: () => import("@/views/Songs/Index.vue"),
+        meta: { icon: "el-icon-document", title: "歌曲", menu: true },
+        children: [
+          {
+            path: "/songs/manage",
+            component: () => import("@/views/Songs/Manage.vue"),
+            meta: {
+              title: "专辑管理",
+              menu: true
+            }
+          }
+        ]
+      },
+      {
         path: "/comments",
         component: () => import("@/views/Comments.vue"),
         meta: { icon: "el-icon-chat-dot-square", title: "评论", menu: true }

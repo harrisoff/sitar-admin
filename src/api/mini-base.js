@@ -104,7 +104,12 @@ export const databaseAggregate = query => {
 
 // ======== 存储 ========
 // 上传单个文件
-export const uploadFile = (file, uploadPath, filename) => {
+export const uploadFile = (
+  file,
+  uploadPath,
+  filename,
+  onUploadProgress = () => {}
+) => {
   const data = {
     env: CLOUD_ENV,
     path: uploadPath
@@ -129,7 +134,8 @@ export const uploadFile = (file, uploadPath, filename) => {
         request({
           url: uploadApi,
           method: "post",
-          data: formData
+          data: formData,
+          onUploadProgress
         })
           .then(() => {
             resolve({
