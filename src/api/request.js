@@ -4,7 +4,7 @@ import { LOCAL_STORAGE_KEYS } from "../../config";
 
 const service = axios.create({
   withCredentials: true, // TODO: send cookies when cross-domain requests
-  timeout: 10000
+  timeout: 15000 // 上传文件的时候会慢一点
 });
 
 // request interceptor
