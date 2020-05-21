@@ -45,12 +45,13 @@ const COLLECTIONS = {
   IMAGE_RAW: "wx_image",
   VIDEO_RAW: "wx_video",
   NEWS_RAW: "wx_news",
-  // 需要备份的
   COMMENT: "comment",
   USER: "user",
   FILE: "file",
   ARTICLE: "article",
-  BOOK: "book"
+  BOOK: "book",
+  SONG: "song",
+  ALBUM: "album"
 };
 // 文件存储路径
 // 虽然是根路径，但是不能以 / 开头
