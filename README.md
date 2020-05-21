@@ -2,7 +2,6 @@
 
 ## TODO
 
-- [ ] 研究一下音频上传到微信后台和云开发后台哪个比较合适
 - [ ] 取消备份功能
 - [ ] 日志记录查看文章
 - [ ] 根据 real_id 重新同步对应的单条图文素材
@@ -33,6 +32,8 @@
 - [x] 文章的显示/隐藏应该在文章页管理，而不是素材页
 - [x] 表格添加筛选条件
 - [x] 重解析 BUG
+- [x] 研究一下音频上传到微信后台和云开发后台哪个比较合适
+- [x] 专辑管理
 
 ## 微信 API
 
@@ -50,33 +51,3 @@ const { errCode, errMsg, requestID } = error
 ```js
 const { errMsg } = error
 ```
-
-## 数据库
-
-song
-
-- _id
-- title
-- writer 作者
-- singer 演唱
-- studio 录音室
-- album_id 所属专辑
-- side A/B 面
-- order 排序
-- lyrics 歌词
-- info 信息
-
-album
-
-- _id
-- artist
-- title
-- release_time 发布时间
-- record_time 录制时间
-- genre 类型
-- label 厂牌
-- producer 制作人
-- song_id 下属歌曲
-- cover_id 封面
-- order 排序
-- info 专辑信息
