@@ -65,6 +65,7 @@ export function addFileRecord(file_id, filename, file_path, onUploadProgress) {
 
 // 文件被使用后更新 ref 字段
 export function updateFileRecord(ids) {
+  // ids 是 cloud_id
   const query = `
   db.collection('${COLLECTIONS.FILE}')
   .where({
