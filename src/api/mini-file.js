@@ -8,7 +8,7 @@ export const fileUploadIfNone = (
   file,
   uploadPath,
   filename,
-  onUploadPercent
+  onUploadPercent = () => {}
 ) => {
   const fileId = genFileIdByPath(uploadPath + "/" + filename);
   return new Promise((resolve, reject) => {
