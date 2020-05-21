@@ -4,19 +4,28 @@ import { databaseUpdate } from "./mini-extend";
 import { COLLECTIONS } from "../../config";
 
 // 文件不存在时上传
-export const fileUploadIfNone = (file, uploadPath, filename) => {
-  const fileId = genFileIdByPath(uploadPath);
+export const fileUploadIfNone = (
+  file,
+  uploadPath,
+  filename,
+  onUploadPercent
+) => {
+  const fileId = genFileIdByPath(uploadPath + "/" + filename);
   return new Promise((resolve, reject) => {
     // 可以替换为查 file 表
     // 不过尝试获取 url 才是 common solution
-    getFileURLs(fileId)
+    getFileURLs(fileId, ({ loaded, total }) => {
+      onUploadPercent((loaded / total / 2) * 100);
+    })
       .then(res => {
         const fileInfo = res.file_list[0];
         // 已存在
         if (fileInfo.status === 0 && fileInfo.download_url) {
           reject("存在同名文件");
         } else {
-          uploadFile(file, uploadPath, filename)
+          uploadFile(file, uploadPath, filename, percent => {
+            onUploadPercent(50 + percent / 2);
+          })
             .then(resolve)
             .catch(reject);
         }
@@ -30,13 +39,13 @@ export const fileUploadForce = (
   file,
   uploadPath,
   filename,
-  onUploadProgress
+  onUploadPercent
 ) => {
-  return uploadFile(file, uploadPath, filename, onUploadProgress);
+  return uploadFile(file, uploadPath, filename, onUploadPercent);
 };
 
 // 上传文件后添加一条记录
-export function addFileRecord(file_id, filename, file_path) {
+export function addFileRecord(file_id, filename, file_path, onUploadProgress) {
   const collectionName = COLLECTIONS.FILE;
   const queryData = {
     add_time: new Date().getTime(),
@@ -51,7 +60,7 @@ export function addFileRecord(file_id, filename, file_path) {
     data: ${JSON.stringify(queryData)}
   })
   `;
-  return databaseAdd(query);
+  return databaseAdd(query, onUploadProgress);
 }
 
 // 文件被使用后更新 ref 字段

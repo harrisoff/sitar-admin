@@ -354,14 +354,6 @@ export default {
           this.$success("上传成功");
           this.uploadFilename = filename;
           this.uploaded = true;
-          // 更新 file 表
-          addFileRecord(fileId, filename, filePath)
-            .then(() => {
-              this.$message("file 表更新成功");
-            })
-            .catch(err => {
-              this.$message.error("更新 file 表失败: " + err);
-            });
         })
         .catch(err => {
           this.$message.error("图片上传失败: " + err);

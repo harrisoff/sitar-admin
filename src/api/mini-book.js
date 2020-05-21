@@ -6,8 +6,7 @@ import { parseArray } from "../utils/wx";
 import { COLLECTIONS, STORAGE } from "../../config";
 
 export function uploadBookCover(file, filename) {
-  const uploadPath = STORAGE.BOOK_COVER + "/" + filename;
-  return fileUploadIfNone(file, uploadPath, filename);
+  return fileUploadIfNone(file, STORAGE.BOOK_COVER, filename);
 }
 
 // book 分类
