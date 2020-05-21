@@ -218,7 +218,7 @@ export default {
                 this.$success("添加成功");
                 this.isDialogVisible = false;
                 this.getBooks();
-                updateFileRecord(this.formData.cover)
+                updateFileRecord([this.formData.cover])
                   .then(() => {
                     this.$message("file 表更新成功");
                   })
@@ -258,7 +258,7 @@ export default {
                 this.isDialogVisible = false;
                 this.getBooks();
                 if (this.uploaded) {
-                  updateFileRecord(this.formData.cover)
+                  updateFileRecord([this.formData.cover])
                     .then(() => {
                       this.$message("file 表更新成功");
                     })

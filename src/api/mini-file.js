@@ -64,12 +64,11 @@ export function addFileRecord(file_id, filename, file_path, onUploadProgress) {
 }
 
 // 文件被使用后更新 ref 字段
-export function updateFileRecord(file_id) {
-  const collectionName = COLLECTIONS.FILE;
+export function updateFileRecord(ids) {
   const query = `
-  db.collection('${collectionName}')
+  db.collection('${COLLECTIONS.FILE}')
   .where({
-    file_id: '${file_id}',
+    file_id: _.in(${JSON.stringify(ids)})
   })
   .update({
     data: {
