@@ -72,33 +72,47 @@ export function getLogList(page = 1, size = 20) {
   return new Promise((resolve, reject) => {
     databaseAggregate(query)
       .then(({ data }) => {
+        console.log(data);
         const jsonData = parseArray(data);
         const result = jsonData.map(r => {
-          const { open_id, context, params, type, _id } = r;
+          console.log(r);
+          const {
+            open_id,
+            level,
+            type,
+            sub_type,
+            data,
+            // context,
+            // params,
+            // type,
+            _id
+          } = r;
           const timestamp = formatDouble(r.timestamp);
           // 如果清空了 user 表但是没清空 log 表
           // 会有取不到 user 的情况
           const user = r.user[0];
           // context
-          const { CLIENTIP, CLIENTIPV6, SOURCE } = context;
+          // const { CLIENTIP, CLIENTIPV6, SOURCE } = context;
           // params
           // 有时候没有 params?
-          const sceneId = params ? formatDouble(params.scene) : "";
-          const path = params ? params.path : "";
+          // const sceneId = params ? formatDouble(params.scene) : "";
+          // const path = params ? params.path : "";
           return {
             openId: open_id,
+            level,
             type,
+            subType: sub_type,
             nickName: user && user.nickName,
             avatarUrl: user && user.avatarUrl,
-            banned: user && user.banned,
             timestamp,
             time: timestampFormat(timestamp),
-            source: SOURCE_MAP[SOURCE],
-            sceneId: sceneId,
-            scene: SCENE_MAP[sceneId],
-            path,
-            ip: CLIENTIP,
-            ipv6: CLIENTIPV6,
+            data,
+            // source: SOURCE_MAP[SOURCE],
+            // sceneId: sceneId,
+            // scene: SCENE_MAP[sceneId],
+            // path,
+            // ip: CLIENTIP,
+            // ipv6: CLIENTIPV6,
             id: _id
           };
         });
@@ -123,10 +137,14 @@ export function getLogCount() {
   return new Promise((resolve, reject) => {
     databaseAggregate(query)
       .then(({ data }) => {
-        const jsonData = parseArray(data);
-        let total = jsonData[0].total;
-        total = formatInt(total);
-        resolve(total);
+        if (data.length) {
+          const jsonData = parseArray(data);
+          let total = jsonData[0].total;
+          total = formatInt(total);
+          resolve(total);
+        } else {
+          resolve(0);
+        }
       })
       .catch(reject);
   });

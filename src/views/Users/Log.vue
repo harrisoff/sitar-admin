@@ -1,25 +1,33 @@
 <template>
   <div class="view-users-log">
-    <el-table :data="logList" row-key="_id" v-loading="isLoading">
+    <el-table :data="logList" v-loading="isLoading">
+      <el-table-column type="expand">
+        <template slot-scope="scope">
+          {{ JSON.stringify(scope.row.data) }}
+        </template>
+      </el-table-column>
       <el-table-column prop="nickName" label="昵称"></el-table-column>
       <el-table-column prop="avatarUrl" label="头像">
         <template slot-scope="scope">
           <img class="avatar" :src="scope.row.avatarUrl" />
         </template>
       </el-table-column>
-      <el-table-column prop="sex" label="用户状态">
+      <el-table-column prop="level" label="等级">
         <template slot-scope="scope">
-          <span v-if="scope.row.banned">封禁</span>
-          <span v-else>未封禁</span>
+          <span v-if="scope.row.level === 'error'" style="color:red"
+            >ERROR</span
+          >
+          <span v-else>LOG</span>
         </template>
       </el-table-column>
       <el-table-column prop="type" label="类型"></el-table-column>
+      <el-table-column prop="subType" label="子类型"></el-table-column>
       <el-table-column prop="time" label="时间"></el-table-column>
-      <el-table-column prop="source" label="来源"></el-table-column>
+      <!-- <el-table-column prop="source" label="来源"></el-table-column>
       <el-table-column prop="scene" label="场景"></el-table-column>
       <el-table-column prop="path" label="路径"></el-table-column>
       <el-table-column prop="ip" label="IP"></el-table-column>
-      <el-table-column prop="ipv6" label="IPv6"></el-table-column>
+      <el-table-column prop="ipv6" label="IPv6"></el-table-column> -->
     </el-table>
     <el-pagination
       @size-change="handleSizeChange"
