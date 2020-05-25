@@ -5,6 +5,7 @@
         <router-link style="float:left;padding:10px;cursor:pointer" to="/">
           <img src="../assets/logo.png" style="height:40px;" />
         </router-link>
+        <span :class="{ env: true, 'is-prod': isProd }">{{ envName }}</span>
         <el-button
           @click="getToken"
           type="primary"
@@ -41,6 +42,7 @@
 <script>
 import { routes } from "@/router";
 
+import { ENV } from "../../config";
 import SidebarItem from "./SidebarItem";
 import { getAccessToken } from "../api/auth";
 
@@ -52,7 +54,8 @@ export default {
   props: [],
   data() {
     return {
-      defaultActive: "/"
+      defaultActive: "/",
+      env: ENV.CLOUD_ENV
     };
   },
   computed: {
@@ -72,6 +75,12 @@ export default {
         }
       });
       return i;
+    },
+    isProd() {
+      return this.env !== "sitar-dev";
+    },
+    envName() {
+      return this.env === "sitar-dev" ? "开发环境" : "正式环境";
     }
   },
   watch: {},
@@ -90,3 +99,14 @@ export default {
   }
 };
 </script>
+
+<style lang="less" scoped>
+.env {
+  display: inline-block;
+  line-height: 60px;
+  font-weight: bold;
+  &.is-prod {
+    color: red;
+  }
+}
+</style>

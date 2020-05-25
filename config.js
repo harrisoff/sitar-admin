@@ -1,7 +1,7 @@
 // local storage
 const LOCAL_STORAGE_KEYS = {
-  MINI_TOKEN: "mini-token",
-  WX_TOKEN: "wx-token",
+  MINI_TOKEN: "token-mini",
+  WX_TOKEN: "token-wx",
   LAST_BACKUP: "last-backup"
 };
 
@@ -17,20 +17,10 @@ const WX_API_SERVER = "https://api.weixin.qq.com/cgi-bin";
 const MINI_APPID = "wx61a34a8985cea189";
 const MINI_APPSECRET = "b6d293b83239961dd65a1f5b6b792e86";
 // 云开发
-const PROCESS_ENV = "dev";
-const N10 = "1302052182";
-const DEV_ENV = {
-  N4: "7369", // ???
-  CLOUD_ENV: "sitar-dev"
-};
-const PROD_ENV = {
-  N4: "",
-  CLOUD_ENV: ""
-};
 const ENV = {
-  N10,
-  N4: PROCESS_ENV === "dev" ? DEV_ENV.N4 : PROD_ENV.N4,
-  CLOUD_ENV: PROCESS_ENV === "dev" ? DEV_ENV.CLOUD_ENV : PROD_ENV.CLOUD_ENV
+  N10: process.env.VUE_APP_N10,
+  N4: process.env.VUE_APP_N4,
+  CLOUD_ENV: process.env.VUE_APP_CLOUD_ENV
 };
 const MINI_API_SERVER = "https://api.weixin.qq.com/tcb";
 const MINI_UPLOAD_SERVER = "https://cos.ap-shanghai.myqcloud.com/";
