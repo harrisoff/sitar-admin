@@ -108,14 +108,6 @@ export const routes = [
               title: "用户管理",
               menu: true
             }
-          },
-          {
-            path: "/users/log",
-            component: () => import("@/views/Users/Log.vue"),
-            meta: {
-              title: "日志",
-              menu: true
-            }
           }
         ],
         meta: { icon: "el-icon-user", title: "用户", menu: true }
