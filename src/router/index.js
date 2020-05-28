@@ -121,6 +121,21 @@ export const routes = [
         meta: { icon: "el-icon-user", title: "用户", menu: true }
       },
       {
+        path: "/logs",
+        component: () => import("@/views/Logs/Index.vue"),
+        children: [
+          {
+            path: "/logs/overview",
+            component: () => import("@/views/Logs/Overview.vue"),
+            meta: {
+              title: "概览",
+              menu: true
+            }
+          }
+        ],
+        meta: { icon: "el-icon-data-line", title: "日志", menu: true }
+      },
+      {
         path: "/settings",
         component: () => import("@/views/Settings.vue"),
         meta: { icon: "el-icon-setting", title: "设置", menu: true }
