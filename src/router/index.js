@@ -75,7 +75,7 @@ export const routes = [
       {
         path: "/songs",
         component: () => import("@/views/Songs/Index.vue"),
-        meta: { icon: "el-icon-document", title: "歌曲", menu: true },
+        meta: { icon: "el-icon-headset", title: "歌曲", menu: true },
         children: [
           {
             path: "/songs/manage",
