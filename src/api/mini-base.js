@@ -212,26 +212,3 @@ export const deleteFiles = fileIds => {
     data
   });
 };
-
-// ======== 导出 ========
-export const exportCollection = data => {
-  data.env = CLOUD_ENV;
-  console.log(data);
-  return request({
-    url: `/mini-api/databasemigrateexport`,
-    method: "post",
-    data
-  });
-};
-
-export const getExportProgress = job_id => {
-  const data = {
-    env: CLOUD_ENV,
-    job_id
-  };
-  return request({
-    url: `/mini-api/databasemigratequeryinfo`,
-    method: "post",
-    data
-  });
-};

@@ -1,8 +1,7 @@
 // local storage
 const LOCAL_STORAGE_KEYS = {
   MINI_TOKEN: "token-mini",
-  WX_TOKEN: "token-wx",
-  LAST_BACKUP: "last-backup"
+  WX_TOKEN: "token-wx"
 };
 
 // 公众号 & 小程序 通用
@@ -27,7 +26,6 @@ const MINI_UPLOAD_SERVER = "https://cos.ap-shanghai.myqcloud.com/";
 const MINI_STATIC_SERVER = `https://${ENV.N4}-${ENV.CLOUD_ENV}-${ENV.N10}.tcb.qcloud.la`;
 // 数据库
 const COLLECTIONS = {
-  BACKUP: "backup",
   SETTING: "setting",
   LOG: "log",
   // 原始素材
@@ -50,8 +48,7 @@ const COLLECTIONS = {
 const STORAGE = {
   BOOK_COVER: "book/cover", // 图片路径
   SONG: "song/file",
-  ALBUM_COVER: "song/cover",
-  BACKUP: "backup" // 备份文件
+  ALBUM_COVER: "song/cover"
 };
 // 云函数
 

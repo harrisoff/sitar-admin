@@ -1,23 +1,6 @@
 <template>
   <div class="view-sync">
     <div class="section">
-      <div class="section__title">备份</div>
-      <span style="color:red">备份功能将废弃</span>
-      <a
-        href="https://developers.weixin.qq.com/miniprogram/dev/wxcloud/guide/database/backup.html"
-        >从开发者工具 1.02.202002282 版本开始，云开发提供了数据库回档功能。</a
-      >
-      <el-button
-        v-if="needBackup"
-        @click="handleBackup"
-        :disabled="!needBackup"
-        size="small"
-        >开始备份</el-button
-      >
-      <p v-else>24 小时内只需备份一次</p>
-      <div v-html="backupLog"></div>
-    </div>
-    <div class="section">
       <div class="section__title">同步公众号数据</div>
       <div class="sub-section">
         <el-button @click="handleGetToken" size="small" type="primary"
@@ -93,22 +76,13 @@ import {
   extractItems
 } from "../api/wx-material";
 import { getAccessToken } from "../api/auth";
-import { getExportProgress } from "../api/mini-base";
 import { databaseUpdate } from "../api/mini-extend";
 import {
   resetMaterial,
   getMediaIdsByType,
   databaseAddPartial
 } from "../api/mini-material";
-import {
-  backupCollection,
-  updateBackupRecord,
-  getLastBackupTime
-} from "../api/mini-backup";
-import { LOCAL_STORAGE_KEYS, COLLECTIONS } from "../../config";
-
-const { COMMENT, USER, FILE, ARTICLE, BOOK, SETTING } = COLLECTIONS;
-const backupList = [COMMENT, USER, FILE, ARTICLE, BOOK, SETTING];
+import { COLLECTIONS } from "../../config";
 
 const apiMap = {
   video: getVideoList,
@@ -135,8 +109,6 @@ export default {
   props: [],
   data() {
     return {
-      backupLog: "",
-      needBackup: false,
       syncLog: "",
       countLog: "",
       // 增量同步
@@ -147,9 +119,7 @@ export default {
   computed: {},
   watch: {},
   beforeCreate() {},
-  created() {
-    this.checkBackupStatus();
-  },
+  created() {},
   mounted() {},
   beforeUpdate() {},
   methods: {
@@ -287,75 +257,6 @@ export default {
       } catch (err) {
         this.$error(err);
       }
-    },
-    // ===== 备份 =====
-    checkBackupStatus() {
-      const dayMs = 24 * 60 * 60 * 1000;
-      const record = localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_BACKUP);
-      const now = new Date().getTime();
-      // 有记录，且一天内备份过
-      if (record && now - parseInt(record) < dayMs) {
-        this.needBackup = false;
-      }
-      // 有记录，超过一天没有备份
-      else if (record && now - parseInt(record) >= dayMs) {
-        this.needBackup = true;
-      }
-      // 无记录
-      else {
-        getLastBackupTime()
-          .then(timestamp => {
-            if (now - timestamp >= dayMs) {
-              this.needBackup = true;
-            } else {
-              this.needBackup = false;
-            }
-          })
-          .catch(() => {
-            // 请求失败或未备份过
-            this.needBackup = true;
-          });
-      }
-    },
-    async startBackup() {
-      const jobs = [];
-      this.backupLog += "开始备份...<br/>";
-      // 有并发数限制，不能 Promise.all
-      let index = 0;
-      for (const name of backupList) {
-        try {
-          const { job_id } = await backupCollection(name);
-          this.backupLog += `(${++index}/${
-            backupList.length
-          })集合 ${name} 备份完成<br/>`;
-          jobs.push({
-            collection: name,
-            job_id,
-            status: "success"
-          });
-        } catch (err) {
-          this.backupLog += `集合 "${name}" 备份出错: ${err}<br/>`;
-          jobs.push({
-            collection: name,
-            job_id: "",
-            status: "failed"
-          });
-        }
-      }
-      this.backupLog += "备份结束，正在更新记录<br/>";
-      const timestamp = new Date().getTime();
-      updateBackupRecord(timestamp, jobs)
-        .then(() => {
-          localStorage.setItem(LOCAL_STORAGE_KEYS.LAST_BACKUP, timestamp);
-          this.backupLog += "更新完成";
-          this.needBackup = false;
-        })
-        .catch(err => {
-          this.backupLog += `记录更新失败: ${err}`;
-        });
-    },
-    handleBackup() {
-      this.startBackup();
     },
     // ===== 更新缓存版本 =====
     handleUpdateVersion() {
