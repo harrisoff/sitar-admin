@@ -93,6 +93,11 @@ export const routes = [
         meta: { icon: "el-icon-chat-dot-square", title: "评论", menu: true }
       },
       {
+        path: "/notice",
+        component: () => import("@/views/Notices.vue"),
+        meta: { icon: "el-icon-bell", title: "通知", menu: true }
+      },
+      {
         path: "/users",
         component: () => import("@/views/Users/Index.vue"),
         children: [

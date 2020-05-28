@@ -35,13 +35,15 @@ const COLLECTIONS = {
   IMAGE_RAW: "wx_image",
   VIDEO_RAW: "wx_video",
   NEWS_RAW: "wx_news",
+
   COMMENT: "comment",
   USER: "user",
   FILE: "file",
   ARTICLE: "article",
   BOOK: "book",
   SONG: "song",
-  ALBUM: "album"
+  ALBUM: "album",
+  NOTICE: "notice"
 };
 // 文件存储路径
 // 虽然是根路径，但是不能以 / 开头
