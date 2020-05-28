@@ -32,6 +32,7 @@ export function getUserList() {
         const jsonData = parseArray(data);
         const result = jsonData.map(u => {
           const { open_id, like_list, comment_list, gender, first_login } = u;
+          // 0 未设置 1 男 2 女
           const sex =
             gender === undefined ? "" : parseInt(formatDouble(gender));
           const firstLogin = timestampFormat(formatDouble(first_login));

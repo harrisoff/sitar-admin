@@ -11,7 +11,7 @@
       <el-table-column prop="sex" label="性别">
         <template slot-scope="scope">
           <i v-if="scope.row.sex === 1" class="el-icon-male"></i>
-          <i v-else-if="scope.row.sex === 1" class="el-icon-female"></i>
+          <i v-else-if="scope.row.sex === 2" class="el-icon-female"></i>
         </template>
       </el-table-column>
       <el-table-column prop="language" label="语言"></el-table-column>
