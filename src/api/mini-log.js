@@ -52,7 +52,8 @@ export function getOverViewLog(page, size) {
               version,
               wifiEnabled
             } = systemInfo;
-            batteryLevel = formatInt(systemInfo.batteryLevel);
+            // 貌似安卓获取不到
+            batteryLevel = batteryLevel && formatInt(batteryLevel);
             data = {
               scene,
               sdk: SDKVersion,
