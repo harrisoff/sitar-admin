@@ -7,6 +7,7 @@
           <img class="avatar" :src="scope.row.avatarUrl" />
         </template>
       </el-table-column>
+      <el-table-column prop="firstLogin" label="首次登录"></el-table-column>
       <el-table-column prop="sex" label="性别">
         <template slot-scope="scope">
           <i v-if="scope.row.sex === 1" class="el-icon-male"></i>

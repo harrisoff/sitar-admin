@@ -32,9 +32,10 @@ export function getUserList() {
         // FIXME: 对于没有授权的用户，有些字段是空的
         const jsonData = parseArray(data);
         const result = jsonData.map(u => {
-          const { open_id, like_list, comment_list, gender } = u;
+          const { open_id, like_list, comment_list, gender, first_login } = u;
           const sex =
             gender === undefined ? "" : parseInt(formatDouble(gender));
+          const firstLogin = timestampFormat(formatDouble(first_login));
           return {
             ...u,
             openId: open_id,
@@ -42,6 +43,7 @@ export function getUserList() {
             commentList: comment_list,
             likeCount: like_list.length,
             commentCount: comment_list.length,
+            firstLogin,
             sex
           };
         });
