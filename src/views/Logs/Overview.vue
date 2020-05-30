@@ -23,18 +23,23 @@
       </el-table-column>
       <el-table-column label="动作">
         <template slot-scope="{ row }">
-          <span v-if="row.data.cache">
-            打开文章:
-            {{ typeMap[row.type][row.subType][row.data.cache] }}
-          </span>
-          <!-- 随机图片 -->
-          <span v-else-if="row.data.type">
-            {{ typeMap[row.type][row.subType][row.data.type] }}
-          </span>
-          <!-- 其他 -->
-          <span v-else>
-            {{ typeMap[row.type][row.subType] }}
-          </span>
+          <div v-if="row.data.level === 'log'">
+            <span v-if="row.data.cache">
+              打开文章:
+              {{ logTypeMap[row.type][row.subType][row.data.cache] }}
+            </span>
+            <!-- 随机图片 -->
+            <span v-else-if="row.data.type">
+              {{ logTypeMap[row.type][row.subType][row.data.type] }}
+            </span>
+            <!-- 其他 -->
+            <span v-else>
+              {{ logTypeMap[row.type][row.subType] }}
+            </span>
+          </div>
+          <div v-else>
+            {{ JSON.stringify(row.data.data) }}
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="数据">
@@ -64,7 +69,7 @@
 <script>
 import { getOverViewLog, getLogCount } from "../../api/mini-log";
 
-const typeMap = {
+const logTypeMap = {
   user: {
     login: "冷启动",
     article: {
@@ -92,6 +97,7 @@ const typeMap = {
     cache: "自动清理缓存"
   }
 };
+const errorTypeMap = {};
 
 export default {
   name: "",
@@ -101,7 +107,8 @@ export default {
   props: [],
   data() {
     return {
-      typeMap,
+      logTypeMap,
+      errorTypeMap,
       logList: [],
       pageSize: 50,
       currentPage: 1,
