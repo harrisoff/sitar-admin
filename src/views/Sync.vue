@@ -142,32 +142,34 @@ export default {
     },
     // 同步入口
     handleSync(type, isFull) {
-      this.syncLog = "";
-      getMaterialCount()
-        .then(async counts => {
-          // 考虑到 get_materialcount 接口返回值 count 不准的问题
-          // 不能先生成 ajax 数组再请求
-          // 需要根据上一次返回值的数量判断是否要继续发送请求
-          // 全量同步
-          if (isFull) {
-            // 获取条数
-            this.syncLog += `同步数量参考值：<br/>`;
-            if (type === "all") {
-              Object.keys(counts).forEach(type => {
+      this.$confirm("确定同步？？？", "提示！！！").then(() => {
+        this.syncLog = "";
+        getMaterialCount()
+          .then(async counts => {
+            // 考虑到 get_materialcount 接口返回值 count 不准的问题
+            // 不能先生成 ajax 数组再请求
+            // 需要根据上一次返回值的数量判断是否要继续发送请求
+            // 全量同步
+            if (isFull) {
+              // 获取条数
+              this.syncLog += `同步数量参考值：<br/>`;
+              if (type === "all") {
+                Object.keys(counts).forEach(type => {
+                  this.syncLog += `${type}: ${counts[type]}<br/>`;
+                });
+              } else {
                 this.syncLog += `${type}: ${counts[type]}<br/>`;
-              });
-            } else {
-              this.syncLog += `${type}: ${counts[type]}<br/>`;
+              }
+              this.fullSync(type, counts);
             }
-            this.fullSync(type, counts);
-          }
-          // 增量同步
-          // 只能增量同步指定类型的素材
-          else {
-            this.incSync(type, counts);
-          }
-        })
-        .catch(this.$message.error);
+            // 增量同步
+            // 只能增量同步指定类型的素材
+            else {
+              this.incSync(type, counts);
+            }
+          })
+          .catch(this.$message.error);
+      });
     },
     // 所有类型或单类型素材全量同步
     async fullSync(type, counts) {
