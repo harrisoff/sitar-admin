@@ -1,3 +1,10 @@
+const TerserWebpackPlugin = require("terser-webpack-plugin");
+const CompressionWebpackPlugin = require("compression-webpack-plugin");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
+
+const isProduction = process.env.NODE_ENV === "production";
+
 const {
   AUTH_SERVER,
   WX_API_SERVER,
@@ -7,6 +14,7 @@ const {
 } = require("./config");
 
 module.exports = {
+  productionSourceMap: !isProduction,
   devServer: {
     proxy: {
       // 公众号 & 小程序 通用
@@ -45,5 +53,32 @@ module.exports = {
         }
       }
     }
+  },
+  configureWebpack(config) {
+    const plugins = [];
+    if (isProduction) {
+      plugins.push(
+        new CompressionWebpackPlugin({
+          filename: "[path].gz[query]",
+          algorithm: "gzip",
+          test: new RegExp("\\.(js|css)$"),
+          threshold: 10240,
+          minRatio: 0.8
+        }),
+        new TerserWebpackPlugin({
+          cache: true,
+          parallel: true,
+          terserOptions: {
+            compress: {
+              drop_console: true,
+              drop_debugger: true
+            }
+          }
+        })
+      );
+    } else {
+      plugins.push(new BundleAnalyzerPlugin());
+    }
+    config.plugins = [...config.plugins, ...plugins];
   }
 };
