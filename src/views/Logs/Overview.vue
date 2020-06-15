@@ -18,18 +18,18 @@
           <span v-if="scope.row.level === 'error'" style="color:red"
             >ERROR</span
           >
-          <span v-else>LOG</span>
+          <span v-else>{{ scope.row.level }}</span>
         </template>
       </el-table-column>
       <el-table-column label="动作">
         <template slot-scope="{ row }">
-          <div v-if="row.data.level === 'log'">
+          <div v-if="row.level === 'log'">
             <span v-if="row.data.cache">
               打开文章:
               {{ logTypeMap[row.type][row.subType][row.data.cache] }}
             </span>
-            <!-- 随机图片 -->
-            <span v-else-if="row.data.type">
+            <!-- 随机 -->
+            <span v-else-if="row.subType === 'random'">
               {{ logTypeMap[row.type][row.subType][row.data.type] }}
             </span>
             <!-- 其他 -->
@@ -37,20 +37,6 @@
               {{ logTypeMap[row.type][row.subType] }}
             </span>
           </div>
-          <div v-else>
-            {{ JSON.stringify(row.data.data) }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="数据">
-        <template slot-scope="{ row }">
-          <span v-if="row.subType === 'article'"> </span>
-          <span
-            v-else-if="row.subType === 'random' && row.data.type === 'song'"
-          ></span>
-          <span v-else-if="row.subType === 'search'"></span>
-          <span></span>
-          <span></span>
         </template>
       </el-table-column>
     </el-table>
@@ -134,6 +120,7 @@ export default {
       this.isLoading = true;
       getOverViewLog(this.currentPage, this.pageSize)
         .then(res => {
+          console.log(res);
           this.logList = res;
         })
         .catch(this.$error)
