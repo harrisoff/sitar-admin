@@ -73,7 +73,6 @@ export default {
       this.isLoading = true;
       getCommentList()
         .then(res => {
-          console.log(res);
           this.commentList = res;
         })
         .catch(this.$error)

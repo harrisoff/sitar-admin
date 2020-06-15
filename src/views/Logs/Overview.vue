@@ -25,12 +25,16 @@
         <template slot-scope="{ row }">
           <div v-if="row.level === 'log'">
             <span v-if="row.data.cache">
-              打开文章:
-              {{ logTypeMap[row.type][row.subType][row.data.cache] }}
+              打开文章:{{ logTypeMap[row.type][row.subType][row.data.cache] }}
             </span>
             <!-- 随机 -->
             <span v-else-if="row.subType === 'random'">
               {{ logTypeMap[row.type][row.subType][row.data.type] }}
+            </span>
+            <!-- 点赞 -->
+            <span v-else-if="row.subType === 'like'">
+              <!-- 日志收集的时候写错了 -->
+              {{ row.data.liked ? "取消赞" : "点赞" }}《{{ row.data.title }}》
             </span>
             <!-- 其他 -->
             <span v-else>
@@ -69,7 +73,8 @@ const logTypeMap = {
       article: "随机文章",
       image: "随机图片"
     },
-    search: "搜索"
+    search: "搜索",
+    comment: "评论"
   },
   miniApi: {
     getUserInfo: "获取用户信息",
@@ -120,7 +125,6 @@ export default {
       this.isLoading = true;
       getOverViewLog(this.currentPage, this.pageSize)
         .then(res => {
-          console.log(res);
           this.logList = res;
         })
         .catch(this.$error)
