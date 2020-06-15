@@ -1,5 +1,7 @@
 # SITAR-ADMIN
 
+[![Build Status](https://jenkins.jjlin.online/buildStatus/icon?job=sitar-admin)](https://jenkins.jjlin.online/job/sitar-admin/)
+
 ## TODO
 
 - [ ] 文章手动排序
