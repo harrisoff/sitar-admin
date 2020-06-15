@@ -30,13 +30,23 @@ export function getCommentList() {
       .then(({ data }) => {
         const jsonData = parseArray(data);
         const result = jsonData.map(r => {
-          const { open_id, _id, content, reply_id, show, article_id } = r;
+          console.log(r);
+          const {
+            open_id,
+            _id,
+            content,
+            reply_id,
+            show,
+            article_id,
+            is_legal
+          } = r;
           const timestamp = formatDouble(r.timestamp);
           const user = r.user[0];
           const article = r.article[0];
           return {
             id: _id,
             show,
+            illegal: !is_legal,
             content,
             replyId: reply_id,
             timestamp,

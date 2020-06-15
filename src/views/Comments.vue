@@ -11,6 +11,13 @@
       <el-table-column prop="content" label="内容"></el-table-column>
       <el-table-column prop="title" label="文章标题"></el-table-column>
       <el-table-column prop="replyId" label="回复 ID"></el-table-column>
+      <el-table-column prop="illegal" label="内容检测">
+        <template slot-scope="{ row }">
+          <span v-if="row.illegal" style="color: red">
+            非法内容
+          </span>
+        </template>
+      </el-table-column>
       <el-table-column prop="show" label="操作">
         <template slot-scope="scope">
           <el-button
@@ -66,6 +73,7 @@ export default {
       this.isLoading = true;
       getCommentList()
         .then(res => {
+          console.log(res);
           this.commentList = res;
         })
         .catch(this.$error)
