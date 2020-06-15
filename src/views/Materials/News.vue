@@ -115,7 +115,7 @@ export default {
       addArticle(articleData)
         .then(() => {
           this.$success("更新成功");
-          // this.initTable();
+          this.initTable();
         })
         .catch(this.$message.error);
     }
