@@ -10,7 +10,11 @@
         <template slot-scope="scope">
           <el-table :data="scope.row.articles">
             <el-table-column type="index" label="#"></el-table-column>
-            <el-table-column prop="title" label="标题"></el-table-column>
+            <el-table-column prop="title" label="标题">
+              <template slot-scope="scope">
+                <a :href="scope.row.url">{{ scope.row.title }}</a>
+              </template>
+            </el-table-column>
             <el-table-column prop="digest" label="简介"></el-table-column>
           </el-table>
         </template>
@@ -150,6 +154,7 @@ export default {
       this.isLoading = true;
       getBookletList()
         .then(({ data }) => {
+          console.log(data);
           this.bookletList = data;
         })
         .catch(this.$error)
