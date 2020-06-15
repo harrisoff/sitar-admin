@@ -3,9 +3,69 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 
-import ElementUI from "element-ui";
-import "element-ui/lib/theme-chalk/index.css";
-Vue.use(ElementUI);
+import {
+  Container,
+  Button,
+  Select,
+  Header,
+  Aside,
+  Menu,
+  Main,
+  Submenu,
+  Backtop,
+  MenuItem,
+  Table,
+  TableColumn,
+  Form,
+  FormItem,
+  Radio,
+  Input,
+  Dialog,
+  Transfer,
+  Link,
+  RadioGroup,
+  RadioButton,
+  Tooltip,
+  Pagination,
+  Upload,
+  MenuItemGroup,
+  Loading,
+  MessageBox,
+  Message,
+  Icon
+} from "element-ui";
+const elComponents = [
+  Container,
+  Button,
+  Select,
+  Header,
+  Aside,
+  Menu,
+  Main,
+  Submenu,
+  Backtop,
+  MenuItem,
+  Table,
+  TableColumn,
+  Form,
+  FormItem,
+  Radio,
+  Input,
+  Dialog,
+  Transfer,
+  Link,
+  RadioGroup,
+  RadioButton,
+  Tooltip,
+  Pagination,
+  Upload,
+  MenuItemGroup,
+  Icon
+];
+elComponents.forEach(component => Vue.use(component));
+Vue.use(Loading.directive);
+Vue.prototype.$confirm = MessageBox.confirm;
+Vue.prototype.$message = Message;
 
 import indexMixin from "./mixin";
 Vue.mixin(indexMixin);
