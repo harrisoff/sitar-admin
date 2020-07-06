@@ -1,5 +1,5 @@
 // local storage
-const LOCAL_STORAGE_KEYS = {
+const SESSION_STORAGE_KEYS = {
   MINI_TOKEN: "token-mini",
   WX_TOKEN: "token-wx"
 };
@@ -8,13 +8,9 @@ const LOCAL_STORAGE_KEYS = {
 const AUTH_SERVER = "https://api.weixin.qq.com/cgi-bin";
 
 // 公众号
-const WX_APPID = "wx98908bfb76102166";
-const WX_APPSECRET = "9ebe8100bded82824f16598853dcd483";
 const WX_API_SERVER = "https://api.weixin.qq.com/cgi-bin";
 
 // 小程序
-const MINI_APPID = "wx61a34a8985cea189";
-const MINI_APPSECRET = "b6d293b83239961dd65a1f5b6b792e86";
 // 云开发
 const ENV = {
   N10: process.env.VUE_APP_N10,
@@ -53,16 +49,12 @@ const STORAGE = {
 // 云函数
 
 module.exports = {
-  LOCAL_STORAGE_KEYS,
+  SESSION_STORAGE_KEYS,
   //
   AUTH_SERVER,
   //
-  WX_APPID,
-  WX_APPSECRET,
   WX_API_SERVER,
   //
-  MINI_APPID,
-  MINI_APPSECRET,
   ENV,
   MINI_API_SERVER,
   MINI_UPLOAD_SERVER,

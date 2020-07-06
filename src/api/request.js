@@ -1,13 +1,13 @@
 import axios from "axios";
-import { Message } from "element-ui";
-import { LOCAL_STORAGE_KEYS } from "../../config";
+
+import router from "../router";
+import { getWxToken, getMiniToken, delMiniToken } from "../utils/session";
 
 const service = axios.create({
-  withCredentials: true, // TODO: send cookies when cross-domain requests
-  timeout: 15000 // 上传文件的时候会慢一点
+  withCredentials: true,
+  timeout: 15 * 1000 // 上传文件的时候会慢一点
 });
 
-// request interceptor
 service.interceptors.request.use(
   config => {
     // content-type
@@ -17,31 +17,29 @@ service.interceptors.request.use(
       // formdata
     }
 
+    // 获取 token 的接口不需要 url 拼接 access_token
     if (config.url.indexOf("/token") === 0) {
       return config;
     }
 
-    // access-token
-    let tokenKey;
-    // 微信接口
-    if (config.url.indexOf("/wx-api") === 0) {
-      tokenKey = LOCAL_STORAGE_KEYS.WX_TOKEN;
-    }
-    // 小程序接口
-    else {
-      tokenKey = LOCAL_STORAGE_KEYS.MINI_TOKEN;
-    }
     if (!config.params) config.params = {};
-    try {
-      const record = localStorage.getItem(tokenKey);
+
+    const isMiniApi = config.url.indexOf("/mini-api") === 0;
+    const record = isMiniApi ? getMiniToken() : getWxToken();
+    if (record) {
       config.params.access_token = JSON.parse(record).accessToken;
-    } catch (err) {
-      Message({
-        message: "没有获取 token 或 token 无效",
-        type: "error",
-        duration: 3000
-      });
-      return Promise.reject("没有获取 token 或 token 无效");
+    }
+    // 没有 token
+    else {
+      // 没有小程序的 token
+      // 刷新一下，导航守卫会跳转到登录页
+      if (isMiniApi) {
+        location.reload();
+      }
+      // 没有公众号的 token
+      else {
+        return Promise.reject("没有获取 token 或 token 无效");
+      }
     }
     return config;
   },
@@ -50,12 +48,13 @@ service.interceptors.request.use(
   }
 );
 
-// response interceptor
 service.interceptors.response.use(
   response => {
     const res = response.data;
+    const url = response.config.url;
+
     // /myUpload 返回 204，res 为空
-    if (response.config.url.indexOf("/myUpload") === 0) {
+    if (url.indexOf("/myUpload") === 0) {
       return res;
     }
 
@@ -64,24 +63,30 @@ service.interceptors.response.use(
     if (errcode === undefined || errcode === 0) {
       return res;
     } else {
-      if (errcode === 42001) {
+      // token 过期
+      if (errcode === 40001 && url.indexOf("/mini-api") === 0) {
+        delMiniToken();
+        // 不要 reload，否则提示会消失
+        router.push("/login");
         return Promise.reject(errmsg);
-      } else {
+      }
+      // 其他错误
+      else {
         return Promise.reject(errmsg);
       }
     }
   },
   error => {
     // timeout 会在这里报错
-    console.error(error); // for debug
-    // const { data, status, headers } = error.response;
     // request interceptor return Promise.reject() 也会被这里捕捉到
-    // Message({
-    //   message: error.message,
-    //   type: "error",
-    //   duration: 3000
-    // });
-    return Promise.reject(error);
+    let errMsg = error;
+    // axios 原生 error 带有 toJSON 方法
+    if (error.toJSON) {
+      const errorJson = error.toJSON();
+      errMsg = errorJson.message;
+    }
+    console.error(errMsg);
+    return Promise.reject(errMsg);
   }
 );
 

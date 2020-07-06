@@ -3,9 +3,34 @@
     <div class="section">
       <div class="section__title">同步公众号数据</div>
       <div class="sub-section">
-        <el-button @click="handleGetToken" size="small" type="primary"
-          >获取微信 token</el-button
-        >
+        <el-form inline>
+          <el-form-item>
+            <el-input
+              v-model="appid"
+              name="username"
+              type="text"
+              size="small"
+              placeholder="微信 appid"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-input
+              v-model="secret"
+              name="password"
+              type="password"
+              size="small"
+              placeholder="微信 appsecret"
+              show-password
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button @click="handleGetToken" size="small" type="primary"
+              >获取公众号 token</el-button
+            ></el-form-item
+          >
+        </el-form>
+        <el-tag v-if="wxToken" type="success">已获取公众号 token</el-tag>
+        <el-tag v-else type="danger">得先获取公众号 token</el-tag>
       </div>
       <div class="sub-section">
         <div class="sub-section__title">查看素材数量</div>
@@ -75,13 +100,14 @@ import {
   getMaterialCount,
   extractItems
 } from "../api/wx-material";
-import { getAccessToken } from "../api/auth";
+import { getWxToken } from "../api/auth";
 import { databaseUpdate } from "../api/mini-extend";
 import {
   resetMaterial,
   getMediaIdsByType,
   databaseAddPartial
 } from "../api/mini-material";
+import { getWxToken as getLocalToken } from "../utils/session";
 import { COLLECTIONS } from "../../config";
 
 const apiMap = {
@@ -109,6 +135,11 @@ export default {
   props: [],
   data() {
     return {
+      // 微信授权
+      appid: "wx98908bfb76102166",
+      secret: "9ebe8100bded82824f16598853dcd483",
+      wxToken: "",
+      // 同步日志
       syncLog: "",
       countLog: "",
       // 增量同步
@@ -120,13 +151,25 @@ export default {
   watch: {},
   beforeCreate() {},
   created() {},
-  mounted() {},
+  mounted() {
+    this.checkToken();
+  },
   beforeUpdate() {},
   methods: {
     handleGetToken() {
-      getAccessToken("wx")
-        .then(this.$success)
+      if (!this.appid || !this.secret)
+        return this.$warn("输入 APPID 和 SECRET");
+      getWxToken(this.appid, this.secret)
+        .then(() => {
+          this.$success("获取成功");
+          this.appid = "";
+          this.secret = "";
+          this.checkToken();
+        })
         .catch(this.$message.error);
+    },
+    checkToken() {
+      this.wxToken = getLocalToken();
     },
     // 素材数量
     getCount() {

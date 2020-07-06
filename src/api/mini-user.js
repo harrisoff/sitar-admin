@@ -1,4 +1,4 @@
-import { databaseAggregate } from "./mini-base";
+import { databaseAggregate, databaseGet } from "./mini-base";
 import { databaseUpdate } from "./mini-extend";
 import { timestampFormat } from "../utils";
 import { parseArray, formatDouble } from "../utils/wx";
@@ -66,4 +66,16 @@ export function setBanned(openId, banned) {
   })
   `;
   return databaseUpdate(query);
+}
+
+// 获取内容版本号
+export function getVersion() {
+  const query = `
+  db.collection('${COLLECTIONS.SETTING}')
+    .where({
+      setting_name: "version",
+    })
+    .get()
+  `;
+  return databaseGet(query);
 }

@@ -32,7 +32,8 @@ import {
   Loading,
   MessageBox,
   Message,
-  Icon
+  Icon,
+  Tag
 } from "element-ui";
 const elComponents = [
   Container,
@@ -60,7 +61,8 @@ const elComponents = [
   Pagination,
   Upload,
   MenuItemGroup,
-  Icon
+  Icon,
+  Tag
 ];
 elComponents.forEach(component => Vue.use(component));
 Vue.use(Loading.directive);

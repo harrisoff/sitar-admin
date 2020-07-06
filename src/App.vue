@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import { getAccessToken } from "./api/auth";
 export default {
   name: "App",
   components: {},
@@ -19,20 +18,7 @@ export default {
   computed: {},
   watch: {},
   beforeCreate() {},
-  created() {
-    // getAccessToken()
-    //   .then()
-    //   .catch(err => {
-    //     this.$message.error("自动获取 token 失败: " + err);
-    //   });
-    setInterval(() => {
-      getAccessToken()
-        .then()
-        .catch(err => {
-          this.$message.error("自动获取 token 失败: " + err);
-        });
-    }, 10 * 60 * 1000);
-  },
+  created() {},
   mounted() {},
   beforeDestroy() {},
   methods: {}

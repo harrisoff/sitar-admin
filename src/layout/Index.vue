@@ -6,13 +6,6 @@
           <img src="../assets/logo.png" style="height:40px;" />
         </router-link>
         <span :class="{ env: true, 'is-prod': isProd }">{{ envName }}</span>
-        <el-button
-          @click="getToken"
-          type="primary"
-          style="float:right;margin:10px;"
-        >
-          获取token
-        </el-button>
       </el-header>
       <el-container>
         <el-aside
@@ -44,7 +37,6 @@ import { routes } from "@/router";
 
 import { ENV } from "../../config";
 import SidebarItem from "./SidebarItem";
-import { getAccessToken } from "../api/auth";
 
 export default {
   name: "",
@@ -90,13 +82,7 @@ export default {
   },
   mounted() {},
   beforeUpdate() {},
-  methods: {
-    getToken() {
-      getAccessToken("mini")
-        .then(this.$success)
-        .catch(this.$message.error);
-    }
-  }
+  methods: {}
 };
 </script>
 

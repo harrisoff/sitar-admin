@@ -1,7 +1,15 @@
 import Vue from "vue";
 import Router from "vue-router";
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
+
+import { getMiniToken } from "../utils/session";
+
+NProgress.configure({ showSpinner: false });
 
 Vue.use(Router);
+
+const whiteList = ["/login"];
 
 export const routes = [
   {
@@ -133,9 +141,44 @@ export const routes = [
         meta: { icon: "el-icon-setting", title: "设置", menu: true }
       }
     ]
+  },
+  {
+    path: "/login",
+    component: () => import("@/views/Login.vue"),
+    meta: { title: "登录" }
   }
 ];
 
-export default new Router({
+const router = new Router({
   routes
 });
+
+router.beforeEach((to, from, next) => {
+  NProgress.start();
+
+  const wxToken = getMiniToken();
+
+  if (wxToken) {
+    if (to.path === "/login") {
+      next("/");
+      NProgress.done();
+    } else {
+      next();
+    }
+  }
+  // token 过期时，会在 axios interceptor 中删除 session 的 token
+  else {
+    if (whiteList.indexOf(to.path) !== -1) {
+      next();
+    } else {
+      next("/login");
+      NProgress.done();
+    }
+  }
+});
+
+router.afterEach(() => {
+  NProgress.done();
+});
+
+export default router;
