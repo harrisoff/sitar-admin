@@ -8,7 +8,7 @@
       label-position="left"
     >
       <div class="title-container">
-        <h3 class="title">LOGIN FORM</h3>
+        <h3 class="title">西塔尔之声后台管理系统</h3>
       </div>
 
       <el-form-item prop="username">
@@ -62,7 +62,7 @@ export default {
   data() {
     return {
       loginForm: {
-        username: "wx61a34a8985cea189",
+        username: "",
         password: ""
       },
       loginRules: {
@@ -94,8 +94,8 @@ export default {
                     throw new Error("");
                   }
                 })
-                .catch(() => {
-                  this.$warn("这好像不是西塔尔之声的 APPID");
+                .catch(err => {
+                  this.$warn("APPID 错误");
                 })
                 .then(() => {
                   this.loading = false;
@@ -114,10 +114,8 @@ export default {
 };
 </script>
 
+<!-- vue-element-admin -->
 <style lang="less">
-/* 修复input 背景不协调 和光标变色 */
-/* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
-
 @bg: #283443;
 @light_gray: #fff;
 @cursor: #fff;
