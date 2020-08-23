@@ -4,7 +4,7 @@
 
 [小程序【西塔尔之声】](https://github.com/harrisoff/sitar)的后台管理系统。
 
-> 要不是微信的 API 需要一个转发服务器，不然这就是一次 serverless 的实践了。
+> 微信的 API 需要一个转发服务器，不然这就是一次 serverless 的实践了。
 
 ## TODO
 
