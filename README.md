@@ -2,6 +2,10 @@
 
 ![](https://github.com/harrisoff/sitar-admin/workflows/build/badge.svg)
 
+[小程序【西塔尔之声】](https://github.com/harrisoff/sitar)的后台管理系统。
+
+> 要不是微信的 API 需要一个转发服务器，不然这就是一次 serverless 的实践了。
+
 ## TODO
 
 - [ ] 文章手动排序
@@ -49,16 +53,3 @@
 ## 微信 API
 
 [接口调用次数上限](https://developers.weixin.qq.com/community/develop/doc/000aaca7e788d07404480e8615ec00)
-
-### 返回值格式
-
-云函数接口返回值格式
-```js
-const { result, errMsg, requestID } = response
-const { errCode, errMsg, requestID } = error
-```
-
-公众号接口返回值格式
-```js
-const { errMsg } = error
-```
