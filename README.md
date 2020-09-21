@@ -4,7 +4,7 @@
 
 [小程序【西塔尔之声】](https://github.com/harrisoff/sitar)的后台管理系统。
 
-> 微信的 API 需要一个转发服务器，不然这就是一次 serverless 的实践了。
+Serverless 架构。静态页面托管在 GitHub Pages，微信接口使用 Cloudflare Workers 转发。
 
 ## TODO
 
