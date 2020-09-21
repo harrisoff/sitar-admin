@@ -10,6 +10,12 @@ Serverless 架构。静态页面托管在 GitHub Pages，接口全部为微信 A
 
 > 不过只有我的 APPID 和 SECRET 才能登录 😎
 
+## 部署
+
+修改非源码文件时也会触发 actions，由于构建产物没有变化，导致在 github pages 的 repo 执行 `git commit` 时报错 `nothing to commit, working tree clean`，从而构建失败。
+
+所以使用 `deploy.sh` 脚本根据 `git status -sb` 的输出来判断是否需要更新 repo。
+
 ## TODO
 
 - [ ] 文章手动排序

@@ -46,6 +46,6 @@ jobs:
         run: git config --global user.email "john@smith.kyon"&&git config --global user.name "harrisoff"
 
       - name: update repo
-        run: cd harrisoff.github.io&&git add .&&git commit -m "update by github actions"&&git push origin master
+        run: cp deploy.sh harrisoff.github.io/a.sh&&cd harrisoff.github.io&&chmod 744 a.sh&&./a.sh
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
