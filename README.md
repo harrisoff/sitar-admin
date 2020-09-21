@@ -45,6 +45,7 @@
 - [x] 通知
 - [x] 取消备份功能
 - [x] 使用 appid 和 secret 登录
+- [x] 上传图片时报错没有获取 token 或 token 无效
 
 ## 微信 API
 

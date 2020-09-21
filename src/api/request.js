@@ -24,21 +24,23 @@ service.interceptors.request.use(
 
     if (!config.params) config.params = {};
 
-    const isMiniApi = config.url.indexOf("/mini-api") === 0;
-    const record = isMiniApi ? getMiniToken() : getWxToken();
+    // 微信 api 全部以 /wx-api 为前缀
+    // 小程序 api 除了 /mini-api 还有 /myUpload
+    const isWxApi = config.url.indexOf("/wx-api") === 0;
+    const record = isWxApi ? getWxToken() : getMiniToken();
     if (record) {
       config.params.access_token = JSON.parse(record).accessToken;
     }
     // 没有 token
     else {
+      // 没有公众号的 token
+      if (isWxApi) {
+        return Promise.reject("没有获取 token 或 token 无效");
+      }
       // 没有小程序的 token
       // 刷新一下，导航守卫会跳转到登录页
-      if (isMiniApi) {
-        location.reload();
-      }
-      // 没有公众号的 token
       else {
-        return Promise.reject("没有获取 token 或 token 无效");
+        location.reload();
       }
     }
     return config;
