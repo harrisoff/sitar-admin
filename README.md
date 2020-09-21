@@ -4,7 +4,11 @@
 
 [小程序【西塔尔之声】](https://github.com/harrisoff/sitar)的后台管理系统。
 
-Serverless 架构。静态页面托管在 GitHub Pages，微信接口使用 Cloudflare Workers 转发。
+Serverless 架构。静态页面托管在 GitHub Pages，接口全部为微信 API，使用 Cloudflare Workers 做反向代理。
+
+[地址](https://harrisoff.github.io/sitar-admin.html)
+
+> 不过只有我的 APPID 和 SECRET 才能登录 😎
 
 ## TODO
 
