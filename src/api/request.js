@@ -4,6 +4,7 @@ import router from "../router";
 import { getWxToken, getMiniToken, delMiniToken } from "../utils/session";
 
 const service = axios.create({
+  baseURL: process.env.VUE_APP_API_ROOT,
   withCredentials: true,
   timeout: 15 * 1000 // 上传文件的时候会慢一点
 });
