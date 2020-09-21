@@ -22,12 +22,30 @@ jobs:
       - name: build
         run: npm run build
 
-      - name: deploy
-        uses: easingthemes/ssh-deploy@v2.0.7
+      - name: setup SSH keys and known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          ssh-add - <<< "${{ secrets.ID_RSA }}"
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.ID_RSA }}
-          ARGS: "-avzr --delete"
-          SOURCE: "dist/"
-          REMOTE_HOST: ${{ secrets.ALI_HOST }}
-          REMOTE_USER: "root"
-          TARGET: "/home/webroot/sitar-admin/dist"
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+
+      - name: clone repository
+        run: git clone git@github.com:harrisoff/harrisoff.github.io.git
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+
+      - name: delete old files
+        run: cd harrisoff.github.io&&rm -rf sitar-admin sitar-admin.html
+
+      - name: add new files
+        run: cd harrisoff.github.io&&cp ../dist/sitar-admin.html sitar-admin.html&&cp -r ../dist/sitar-admin sitar-admin
+
+      - name: git config
+        run: git config --global user.email "john@smith.kyon"&&git config --global user.name "harrisoff"
+
+      - name: update repo
+        run: cd harrisoff.github.io&&git add .&&git commit -m "update by github actions"&&git push origin master
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock

@@ -15,6 +15,8 @@ const {
 
 module.exports = {
   productionSourceMap: !isProduction,
+  assetsDir: "sitar-admin",
+  indexPath: "sitar-admin.html",
   devServer: {
     proxy: {
       // 公众号 & 小程序 通用
