@@ -10,7 +10,7 @@
     "test": "node test.js"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "core-js": "^3.6.4",
     "dayjs": "^1.8.24",
     "element-ui": "^2.13.1",
